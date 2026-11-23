@@ -48,12 +48,16 @@ code,.mono{font-family:var(--font-mono);font-size:.88em}
 .bar nav a:hover{color:var(--paper)}
 
 /* hero */
-.hero{border-bottom:1px solid var(--line);background:
-  radial-gradient(ellipse 60% 70% at 72% 45%,#1b2534 0%,transparent 70%),var(--ink)}
-.hero .wrap{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:32px;padding-top:48px;padding-bottom:40px;align-items:center}
+.hero{position:relative;border-bottom:1px solid var(--line);background:radial-gradient(ellipse 55% 75% at 70% 45%,#1b2638 0%,transparent 70%),var(--ink);overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(#5a789622 1px,transparent 1px),linear-gradient(90deg,#5a789622 1px,transparent 1px),linear-gradient(#5a78960f 1px,transparent 1px),linear-gradient(90deg,#5a78960f 1px,transparent 1px);
+  background-size:80px 80px,80px 80px,16px 16px,16px 16px;
+  -webkit-mask-image:radial-gradient(ellipse 80% 90% at 60% 40%,#000 30%,transparent 85%);mask-image:radial-gradient(ellipse 80% 90% at 60% 40%,#000 30%,transparent 85%)}
+.hero .wrap{position:relative}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,6fr);gap:40px;padding-top:56px;padding-bottom:56px;align-items:center}
 .callno{font-family:var(--font-mono);font-size:.78rem;color:var(--muted);letter-spacing:.06em;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .callno b{color:var(--amber);font-weight:500}
-.hero h1{font-size:clamp(3rem,7vw,5.6rem);line-height:.92;margin:18px 0 18px;font-weight:700;text-transform:uppercase}
+.hero h1{font-size:clamp(2.6rem,4.2vw,3.9rem);line-height:.95;margin:18px 0 20px;font-weight:700;text-transform:uppercase;letter-spacing:.005em}
 .hero h1 em{font-style:normal;color:var(--amber)}
 .lede{font-size:1.12rem;color:var(--paper);max-width:34em}
 .lede+.lede{color:var(--muted);font-size:1rem;margin-top:12px}
@@ -63,8 +67,8 @@ code,.mono{font-family:var(--font-mono);font-size:.88em}
 .facts dd{margin:2px 0 0;font-family:var(--font-display);font-size:1.6rem;font-weight:600;font-variant-numeric:tabular-nums}
 .facts dd small{display:block;font:400 .78rem/1.35 var(--font-body);color:var(--muted)}
 
-.viewer{position:relative;border:1px solid var(--line);background:#0b1017;min-height:460px;display:grid;grid-template-rows:1fr auto}
-.viewer canvas{width:100%;height:100%;min-height:400px;display:block;cursor:grab;touch-action:none}
+.viewer{position:relative;border:1px solid var(--line);background:radial-gradient(ellipse at 50% 35%,#132034,#0a0f16 70%);min-height:600px;display:grid;grid-template-rows:1fr auto;box-shadow:0 30px 80px -40px #000,0 0 0 1px #ffffff08 inset}
+.viewer canvas{width:100%;height:100%;min-height:470px;display:block;cursor:grab;touch-action:none}
 .viewer canvas:active{cursor:grabbing}
 .vtag{position:absolute;top:12px;left:14px;font-family:var(--font-mono);font-size:.72rem;color:var(--muted);pointer-events:none;line-height:1.5}
 .vtag b{color:var(--paper);font-weight:500}
@@ -86,7 +90,7 @@ section{padding:84px 0;border-bottom:1px solid var(--line)}
 .shead{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px 32px;align-items:end;margin-bottom:36px}
 .shead .callno{grid-column:1/-1}
 .shead p.intro{grid-column:1/-1;max-width:44em;color:var(--muted);font-size:1.04rem}
-.stamp{font:500 .72rem var(--font-mono);letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border:1.5px solid currentColor;white-space:nowrap;transform:rotate(-2deg);display:inline-block}
+.stamp{font:500 .72rem var(--font-mono);letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border:1.5px solid currentColor;white-space:nowrap;display:inline-block}
 .s-tested{color:var(--teal)}
 .s-proto{color:var(--amber)}
 .s-tbc{color:var(--muted);border-style:dashed}
@@ -327,6 +331,38 @@ figcaption b{color:var(--paper);font-weight:500}
 .pips i.on{background:var(--amber)}
 .aitbl td:last-child{white-space:nowrap;font-size:.86rem;color:var(--muted)}
 @media (max-width:680px){.aiu{grid-template-columns:minmax(0,1fr)}}
+/* polish */
+.kpis{border-bottom:1px solid var(--line);background:linear-gradient(180deg,#0f1620,var(--ink))}
+.kpis .wrap{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
+.kpis a{display:flex;flex-direction:column;gap:6px;padding:26px 20px 24px;border-right:1px solid var(--line);text-decoration:none;color:var(--paper);transition:background .25s}
+.kpis a:first-child{border-left:1px solid var(--line)}
+.kpis a:hover{background:#ffffff06}
+.kpis b{font:700 2.5rem/1 var(--font-display);font-variant-numeric:tabular-nums;color:var(--paper)}
+.kpis b small{font-size:1.05rem;color:var(--amber);margin:0 3px;font-weight:600}
+.kpis span{font-size:.84rem;color:var(--muted);line-height:1.4}
+section.alt{background:linear-gradient(180deg,#111925,#0f151f)}
+section.alt .nd,section.alt .card,section.alt .aiphase{background:#162030}
+.card,.repo,.aiphase,.fsafe li{transition:border-color .25s,transform .25s}
+.card:hover,.repo:hover,.aiphase:hover,.fsafe li:hover{border-color:#e39b4b88;transform:translateY(-2px)}
+.shots img,.gal figure>img,.ab .box,.cand .box{transition:border-color .25s}
+.shots img:hover,.gal figure>img:hover,.ab .box:hover,.cand .box:hover{border-color:#e39b4b88}
+.bar nav a.active{color:var(--paper);box-shadow:inset 0 -2px 0 var(--amber)}
+.bar nav a{padding:16px 0}
+.progress{position:absolute;left:0;bottom:-1px;height:2px;background:var(--amber);width:0;transition:width .1s linear}
+.bar{position:sticky}
+.shead h2{position:relative}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:no-preference){
+  .hero .callno{animation:rise .6s ease-out both}
+  .hero h1{animation:rise .7s .08s ease-out both}
+  .hero .lede{animation:rise .7s .18s ease-out both}
+  .hero .lede+.lede{animation-delay:.26s}
+  .viewer{animation:fade 1s .2s ease-out both}
+  .kpis a{animation:rise .6s ease-out both}
+  .kpis a:nth-child(2){animation-delay:.36s}.kpis a:nth-child(3){animation-delay:.44s}.kpis a:nth-child(4){animation-delay:.52s}.kpis a:nth-child(5){animation-delay:.6s}
+  .kpis a:first-child{animation-delay:.28s}
+}
 /* tbc */
 .tbc{border:1.5px dashed var(--line);padding:24px}
 .tbc ul{margin:12px 0 0;padding-left:18px;color:var(--muted);display:grid;gap:6px}
@@ -370,13 +406,13 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 </head>
 <body>
 
-<header class="bar">
+<header class="bar"><div class="progress" id="prog"></div>
   <div class="wrap">
     <a class="brand" href="#top">A06<span>/</span>LIBRARY ROBOT</a>
     <nav aria-label="Sections">
       <a href="#mission">Mission</a><a href="#architecture">Software</a><a href="#mechanical">Mechanical</a>
-      <a href="#electrical">Electrical</a><a href="#firmware">Embedded control</a><a href="#perception">Perception</a>
-      <a href="#planning">Arm planning</a><a href="#safety">Safety</a><a href="#navigation">Localisation</a><a href="#budget">Budget</a><a href="#ai-use">AI use</a><a href="#repos">Code</a>
+      <a href="#electrical">Electrical</a><a href="#firmware">Control</a><a href="#perception">Perception</a>
+      <a href="#planning">Arm</a><a href="#safety">Safety</a><a href="#navigation">Localisation</a><a href="#budget">Budget</a><a href="#ai-use">AI</a><a href="#repos">Code</a>
     </nav>
   </div>
 </header>
@@ -386,14 +422,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   <div class="wrap">
     <div>
       <div class="callno"><b>629.892</b> IC382 · GROUP A06 · DESIGN SUBMISSION</div>
-      <h1>A robot that <em>clears</em> library desks</h1>
+      <h1>A robot that <em>clears</em><br>library desks</h1>
       <p class="lede">It patrols the reading room, works out which desks are free, flies a drone over each one, and sorts every object it finds into public property, personal property or waste.</p>
       <p class="lede">The model on the right is our upper assembly, loaded from the same URDF we use in Isaac Sim. The demo takes a tag from one of the three slots at the side, raises the arm, turns to the front and sets the tag down. Drag to orbit, move the joints yourself, or explode the model into its six links.</p>
-      <dl class="facts">
-        <div><dt>Joints</dt><dd>5<small>3 prismatic · 2 yaw</small></dd></div>
-        <div><dt>Object classes</dt><dd>3<small>public · personal · waste</small></dd></div>
-        <div><dt>Safety stop</dt><dd>1.0 m<small>to the nearest person</small></dd></div>
-      </dl>
     </div>
 
     <div class="viewer" id="mechanical-viewer">
@@ -409,6 +440,16 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="kpis">
+  <div class="wrap">
+    <a href="#navigation"><b>4.5<small>cm</small></b><span>localisation error in simulation (XY RMSE)</span></a>
+    <a href="#firmware"><b>4<small>/ 6</small></b><span>actuator branches already under control</span></a>
+    <a href="#perception"><b>5.5<small>s</small></b><span>to sort one desk photo with a 4-bit VLM on 8 GB</span></a>
+    <a href="#safety"><b>41</b><span>safety-logic tests passing in the stop-for-people layer</span></a>
+    <a href="#budget"><b><small>HK$</small>1,214</b><span>total parts budget across 36 order lines</span></a>
   </div>
 </div>
 
@@ -434,7 +475,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 </section>
 
 <!-- 02 SOFTWARE -->
-<section id="architecture">
+<section id="architecture" class="alt">
   <div class="wrap">
     <div class="shead">
       <div class="callno"><b>629.892 .02</b> SOFTWARE ARCHITECTURE</div>
@@ -754,7 +795,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 </section>
 
 <!-- 06 PERCEPTION -->
-<section id="perception">
+<section id="perception" class="alt">
   <div class="wrap">
     <div class="shead">
       <div class="callno"><b>629.892 .06</b> PERCEPTION</div>
@@ -931,7 +972,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 </section>
 
 <!-- 09 NAVIGATION -->
-<section id="navigation">
+<section id="navigation" class="alt">
   <div class="wrap">
     <div class="shead">
       <div class="callno"><b>629.892 .09</b> LOCALISATION &amp; NAVIGATION</div>
@@ -990,7 +1031,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         </table>
       </div>
     </div>
-    <figure class="wide lightfig"><img src="media/cloud-alignment.png" alt="Top view: before, the depth cloud lies skewed off the map; after, it sits on the table and chair outlines" width="1760" height="720"><figcaption><b>Stationary check.</b> Depth cloud over the map before (GICP) and after (guarded NDT). The robot's position error fell from about 1.81 m to 4.6 cm.</figcaption></figure>
+    <figure class="wide"><img src="media/cloud-alignment.png" alt="Top view: before, the depth cloud lies skewed off the map; after, it sits on the table and chair outlines" width="1760" height="720"><figcaption><b>Stationary check.</b> Depth cloud over the map before (GICP) and after (guarded NDT). The robot's position error fell from about 1.81 m to 4.6 cm.</figcaption></figure>
 
     <div class="limits" style="border-left-color:var(--amber)">
       <h3>What this does not prove yet</h3>
@@ -1120,6 +1161,12 @@ btns.forEach((b,j)=>b.addEventListener('click',()=>{pinned=true;i=j;show(b.datas
 show(keys[0]);
 if(!matchMedia('(prefers-reduced-motion: reduce)').matches)setInterval(()=>{if(pinned)return;i=(i+1)%keys.length;show(keys[i]);},3200);
 })();
+// ---------- nav: progress + active section ----------
+(()=>{const prog=document.getElementById('prog'),links=[...document.querySelectorAll('.bar nav a')];
+ const map=new Map(links.map(a=>[a.getAttribute('href').slice(1),a]));
+ addEventListener('scroll',()=>{const h=document.documentElement;prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';},{passive:true});
+ const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.remove('active'));const a=map.get(e.target.id);if(a)a.classList.add('active');}}),{rootMargin:'-45% 0px -50% 0px'});
+ document.querySelectorAll('section[id]').forEach(s=>io.observe(s));})();
 // ---------- videos: no autoplay for reduced motion ----------
 if(matchMedia('(prefers-reduced-motion: reduce)').matches)document.querySelectorAll('video[autoplay]').forEach(v=>{v.removeAttribute('autoplay');v.pause();});
 // ---------- electrical filters ----------
@@ -1169,7 +1216,7 @@ document.getElementById('reset').onclick=()=>{setPlaying(false);q.fill(0);};
 syncSliders();
 
 const canvas=document.getElementById('gl');
-const gl=canvas.getContext('webgl2',{antialias:true});
+const gl=canvas.getContext('webgl2',{antialias:true,alpha:true,premultipliedAlpha:false});
 if(!gl){document.getElementById('glfail').style.display='grid';return;}
 
 const VS=`#version 300 es
@@ -1224,7 +1271,7 @@ const look=(e,c,up)=>{const z=norm(sub(e,c)),x=norm(cross(up,z)),y=cross(z,x);re
 const sub=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]],dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2],cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],norm=a=>{const l=Math.hypot(...a);return a.map(v=>v/l);};
 
 // camera
-let yaw=0.62,pitch=0.36,dist=2.05; const target=[-0.02,0.18,0.42];
+let yaw=0.62,pitch=0.34,dist=1.78; const target=[-0.02,0.2,0.44];
 let drag=null;
 canvas.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY};canvas.setPointerCapture(e.pointerId);});
 canvas.addEventListener('pointermove',e=>{if(!drag)return;yaw-=(e.clientX-drag.x)*0.008;pitch=Math.min(1.35,Math.max(-0.15,pitch+(e.clientY-drag.y)*0.006));drag={x:e.clientX,y:e.clientY};});
@@ -1264,7 +1311,7 @@ function frame(now){
     if(!drag) yaw+=0.0012;}
   explodeT+=((explodeOn?1:0)-explodeT)*(reduce?1:0.08);
   syncSliders();
-  gl.viewport(0,0,w,h);gl.clearColor(0.043,0.063,0.09,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.enable(gl.DEPTH_TEST);
+  gl.viewport(0,0,w,h);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.enable(gl.DEPTH_TEST);
   const tz=target[2]+explodeT*0.1, dd=dist+explodeT*0.3;
   const eye=[target[0]+dd*Math.cos(pitch)*Math.cos(yaw),target[1]+dd*Math.cos(pitch)*Math.sin(yaw),tz+dd*Math.sin(pitch)];
   const VP=mul(persp(0.62,w/Math.max(h,1),0.05,10),look(eye,[target[0],target[1],tz],[0,0,1]));
