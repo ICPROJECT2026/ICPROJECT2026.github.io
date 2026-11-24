@@ -1014,17 +1014,17 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <div class="pdemo adem" id="arm-demo">
       <div class="pd-top">
         <div class="pd-steps" role="group" aria-label="Planning step">
-          <button class="pd-step" data-st="0"><i>1</i>Plan from above</button>
-          <button class="pd-step" data-st="1"><i>2</i>Lift into 3D</button>
+          <button class="pd-step" data-st="0"><i>1</i>Plan around</button>
+          <button class="pd-step" data-st="1"><i>2</i>See it in 3D</button>
           <button class="pd-step" data-st="2"><i>3</i>Follow the path</button>
         </div>
         <div class="pd-ctl"><span class="pd-count" id="ad-read">z = —</span><button class="btn" id="ad-replay">Replay</button></div>
       </div>
-      <p class="pd-say" id="ad-say" aria-live="polite">Objects on the desk are known as boxes: a footprint and a height.</p>
+      <p class="pd-say" id="ad-say" aria-live="polite">A few simple objects sit on the desk between the arm and its target.</p>
       <div class="ad-view"><canvas id="ad-gl" aria-label="Animated arm trajectory over boxes of different heights"></canvas><div class="vfallback" id="ad-fail">This demo needs WebGL 2.</div>
-        <div class="ad-key"><span><i style="background:#e39b4b"></i>planned tip path</span><span><i style="background:#5fd38a"></i>target</span><span><i style="background:#7fa6ff"></i>obstacles (height = box)</span></div>
+        <div class="ad-key"><span><i style="background:#e39b4b"></i>planned tip path</span><span><i style="background:#5fd38a"></i>target</span><span><i style="background:#7fa6ff"></i>objects to avoid (outline = 30 mm margin)</span></div>
       </div>
-      <p class="pd-note">Illustration of the planner's dynamic-Z rule on our own arm model: the tip keeps 60 mm above whatever is underneath, then descends onto the target. The object layout is made up for the demo; the arm geometry and joints come from <code>upper_assembly.urdf</code>, solved with 2R inverse kinematics plus the lift.</p>
+      <p class="pd-note">Illustration on our own arm model: the tip travels 45 mm above the desk, keeps a 30 mm margin around every object and descends onto the target at the end. The objects and their layout are made up for the demo; the arm geometry and joints come from <code>upper_assembly.urdf</code>, solved with 2R inverse kinematics plus the lift.</p>
     </div>
     <h3 id="iterations" style="margin:40px 0 14px">Four iterations in two days</h3>
     <div class="iters">
@@ -1372,17 +1372,13 @@ function ik(tx,ty,d,prev){const v2=[V2[0]+d*EXA[0],V2[1]+d*EXA[1]],l1=Math.hypot
   let t1=wrap(p1-a1),t2=wrap(p2-a2-(p1-a1));t1=prev[0]+wrap(t1-prev[0]);t2=prev[1]+wrap(t2-prev[1]);const sc=Math.abs(t1-prev[0])+Math.abs(t2-prev[1]);if(sc<bs){bs=sc;best=[t1,t2];}}return best;}
 // ---- scene: desk + boxes (metres, robot frame; +Y is the front)
 const DESK={x0:-0.42,x1:0.46,y0:0.34,y1:0.88,z:0.40};
-const OBS=[{c:[-0.13,0.50],s:[0.17,0.12],h:0.06},{c:[0.04,0.64],s:[0.24,0.16],h:0.035},{c:[0.19,0.50],s:[0.08,0.08],h:0.12},{c:[-0.27,0.73],s:[0.13,0.13],h:0.16},{c:[0.36,0.53],s:[0.10,0.16],h:0.09}];
+const OBS=[{c:[-0.12,0.54],s:[0.11,0.11],h:0.075},{c:[0.11,0.63],s:[0.09,0.09],h:0.07},{c:[-0.30,0.68],s:[0.09,0.14],h:0.08},{c:[0.28,0.50],s:[0.11,0.08],h:0.065}];
 const TGT={c:[0.31,0.75],s:[0.08,0.05],h:0.02};
-const WP=[[-0.32,0.40],[-0.14,0.49],[0.04,0.60],[0.20,0.67],[0.31,0.75]];
+const WP=[[-0.32,0.42],[-0.12,0.42],[-0.01,0.48],[0.005,0.63],[0.05,0.75],[0.17,0.78],[0.31,0.75]];
 function catmull(P,n){const out=[];const pts=[P[0],...P,P[P.length-1]];for(let i=1;i<pts.length-2;i++)for(let k=0;k<n;k++){const t=k/n,[p0,p1,p2,p3]=[pts[i-1],pts[i],pts[i+1],pts[i+2]];
  out.push([0,1].map(j=>0.5*((2*p1[j])+(-p0[j]+p2[j])*t+(2*p0[j]-5*p1[j]+4*p2[j]-p3[j])*t*t+(-p0[j]+3*p1[j]-3*p2[j]+p3[j])*t*t*t)));}out.push(P[P.length-1]);return out;}
-const XY=catmull(WP,40),N=XY.length,CLR=0.06,R=0.03;
-const under=(x,y)=>{let h=DESK.z;for(const o of OBS)if(Math.abs(x-o.c[0])<o.s[0]/2+R&&Math.abs(y-o.c[1])<o.s[1]/2+R)h=Math.max(h,DESK.z+o.h);return h;};
-let zr=XY.map(([x,y])=>under(x,y)+CLR);const W=10;zr=zr.map((_,i)=>Math.max(...zr.slice(Math.max(0,i-W),i+W+1)));
-let zs=zr.map((_,i)=>{const a=zr.slice(Math.max(0,i-6),i+7);return a.reduce((p,c)=>p+c,0)/a.length;});
-const ZT=DESK.z+TGT.h+0.008,ND=28;for(let i=N-ND;i<N;i++){const t=ease((i-(N-ND))/(ND-1));zs[i]=lerp(zs[N-ND-1],ZT,t);}
-zs=zs.map((z,i)=>i<N-ND?Math.max(z,zr[i]-0.002):z);
+const XY=catmull(WP,26),N=XY.length,MARGIN=0.03,ZC=0.445;
+const ZT=DESK.z+TGT.h+0.008,ND=26;let zs=XY.map(()=>ZC);for(let i=N-ND;i<N;i++){const t=ease((i-(N-ND))/(ND-1));zs[i]=lerp(ZC,ZT,t);}
 // joint solution along the path
 let prev=[-1.2,0.6];const Q=XY.map(([x,y],i)=>{const a=ik(x,y,0,prev);prev=a;const z=zs[i];const lift=clamp(z-Z0,0,0.3);const rack=clamp(z-Z0-lift,-0.06,0.06);return [lift,a[0],a[1],0,rack];});
 // ---- GL
@@ -1420,10 +1416,10 @@ const CHAIN=['lift_link','arm1_link','arm2_link','extension_link','rack_link'];
 function fk(q){const W={base_link:I()};let par='base_link';CHAIN.forEach((c,i)=>{let m=mul(W[par],T(...JO[i]));
  if(i===0||i===4)m=mul(m,T(0,0,q[i]));else if(i===3)m=mul(m,T(EXA[0]*q[3],EXA[1]*q[3],0));else m=mul(m,Rz(q[i]));W[c]=m;par=c;});return W;}
 // ---- timeline
-const DUR=[2.6,2.4,6.0,1.6];let t0=performance.now(),playing=true,stepPinned=-1;
-const TEXT=['1 · From above, the planner sees each object as a footprint and draws the tip path from the start to the target.',
- '2 · Every box gets its height. The path lifts to stay 60 mm above whatever is underneath, then drops onto the target.',
- '3 · The joints are solved along the path and our arm follows it: lift for height, shoulder and elbow for position.'];
+const DUR=[3.0,2.4,6.0,1.6];let t0=performance.now(),playing=true,stepPinned=-1;
+const TEXT=['1 · From above, each object is a footprint with a 30 mm safety margin. The tip path goes around every margin to reach the target.',
+ '2 · In 3D the objects stand taller than the tip, so the arm cannot pass over them: it has to go around, low over the desk.',
+ '3 · The joints are solved along the path and our arm follows it: shoulder and elbow for position, the lift for height.'];
 function restart(at){t0=performance.now()-(at||0)*1000;playing=true;}
 document.getElementById('ad-replay').onclick=()=>restart(0);
 steps.forEach((b,i)=>b.addEventListener('click',()=>restart(DUR.slice(0,i).reduce((a,c)=>a+c,0)+(i?0.01:0))));
@@ -1471,7 +1467,7 @@ function frame(now){requestAnimationFrame(frame);if(!visible)return;
  // edges + path
  gl.useProgram(LP);gl.uniformMatrix4fv(lu.VP,false,VP);
  const edge=(M,c)=>{gl.uniformMatrix4fv(lu.M,false,M);gl.uniform4fv(lu.C,c);gl.bindVertexArray(EDGE.v);gl.drawArrays(gl.LINES,0,24);};
- for(const o of OBS)edge(mul(T(o.c[0],o.c[1],DESK.z),S(o.s[0],o.s[1],Math.max(0.002,o.h*hk))),[.55,.68,1,.9]);
+ for(const o of OBS){edge(mul(T(o.c[0],o.c[1],DESK.z),S(o.s[0],o.s[1],Math.max(0.002,o.h*hk))),[.55,.68,1,.9]);edge(mul(T(o.c[0],o.c[1],DESK.z+0.001),S(o.s[0]+2*MARGIN,o.s[1]+2*MARGIN,0.001)),[.55,.68,1,lerp(.55,.18,e2)]);}
  edge(mul(T(TGT.c[0],TGT.c[1],DESK.z),S(TGT.s[0],TGT.s[1],Math.max(0.002,TGT.h*hk))),[.45,.95,.62,1]);
  gl.uniformMatrix4fv(lu.M,false,I());gl.bindVertexArray(PATH.v);
  gl.uniform4f(lu.C,.89,.61,.29,0.6);gl.drawArrays(gl.LINE_STRIP,0,drawnB);
