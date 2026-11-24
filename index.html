@@ -485,29 +485,24 @@ section.alt .nd,section.alt .card,section.alt .aiphase{background:#162030}
 @media (max-width:1000px){.navcmp{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.arena{grid-column:1/-1}.roles{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:680px){.navcmp,.risks{grid-template-columns:minmax(0,1fr)}.roles{grid-template-columns:minmax(0,1fr)}.gantt .gr{grid-template-columns:150px repeat(13,minmax(30px,1fr));min-width:560px}}
 
-/* safety demo */
-.sd{margin:8px 0 0}
-.sd-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px}
-.sd-hint{font:400 .8rem var(--font-mono);color:var(--muted)}
-.pd-step[aria-pressed="true"]{color:var(--teal);border-color:color-mix(in srgb,var(--teal) 60%,var(--line))}
-.pd-step.on{color:#ff8d88;border-color:#ff8d88}
-#sd-person:active{cursor:grabbing}
-#sd-person:focus{outline:none}
-#sd-person:focus-visible line{stroke:var(--amber)}
-#sd-band{touch-action:none}
-.sdz{transition:fill-opacity .2s}
-.sdz.cur{fill-opacity:.62}
-.sd-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-top:0}
-.sd-card{background:var(--ink);padding:14px 18px;display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:2px 12px}
-.sd-card small{grid-column:1/-1;font:500 .68rem var(--font-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
-.sd-card b{font:700 1.9rem var(--font-display);letter-spacing:.03em;color:var(--teal);transition:color .15s}
-.sd-card b.stop{color:#ff8d88}
-.sd-card span{font:400 .82rem var(--font-mono);color:var(--muted)}
-.sd-card em{font-style:normal;color:var(--paper);font-size:1.05rem}
-.sd-card p{grid-column:1/-1;margin:0;font-size:.85rem;color:var(--muted);min-height:1.4em}
-.sd-card.ghost b{opacity:.85}
-.sd-trace{border-top:0}
-@media (max-width:680px){.sd-cards{grid-template-columns:minmax(0,1fr)}}
+
+/* person-distance demo */
+.pdd{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:18px;align-items:start}
+.pdd-view{position:relative;border:1px solid var(--line);background:#000}
+.pdd-view canvas{display:block;width:100%;height:auto}
+.pdd-tag{position:absolute;left:10px;top:10px;font:500 .7rem var(--font-mono);letter-spacing:.08em;background:#0e131bcc;border:1px solid var(--line);padding:3px 8px;color:var(--paper)}
+.pdd-side{display:grid;gap:10px}
+.pdd-k{border:1px solid var(--line);padding:10px 14px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;background:var(--ink)}
+.pdd-k small,.pdd-hist small{font:500 .66rem var(--font-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted);flex:1 0 100%}
+.pdd-k b{font:700 1.5rem var(--font-display);font-variant-numeric:tabular-nums}
+.pdd-k span{font-size:.8rem;color:var(--muted)}
+.pdd-k.big b{font-size:2.3rem;color:var(--amber)}
+.pdd-hist{border:1px solid var(--line);padding:10px 14px 6px;background:var(--ink)}
+.pdd-hist svg,.pdd-gauge svg{display:block;width:100%;height:auto}
+.pdd-gauge{border:1px solid var(--line);padding:6px 8px 2px;background:var(--ink)}
+.pdd-out{font:700 1.6rem var(--font-display);letter-spacing:.04em;text-align:center;padding:8px;border:1px solid var(--line);color:var(--muted);transition:all .3s}
+.pdd-out.stop{color:#ffb3b0;border-color:#d9534f;background:#d9534f22}
+@media (max-width:820px){.pdd{grid-template-columns:minmax(0,1fr)}}
 /* tbc */
 .tbc{border:1.5px dashed var(--line);padding:24px}
 .tbc ul{margin:12px 0 0;padding-left:18px;color:var(--muted);display:grid;gap:6px}
@@ -1069,54 +1064,38 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <span class="stamp s-tested">41 logic tests pass</span>
       <p class="intro">YOLO11n finds people, depth gives the distance, and every velocity command is gated.</p>
     </div>
-    <div id="stop-zones" class="sd">
-      <div class="sd-bar">
-        <div class="pd-steps">
-          <button class="pd-step" type="button" id="sd-play">&#9654; Play a walk-past</button>
-          <button class="pd-step" type="button" id="sd-noise" aria-pressed="true">Depth noise &plusmn;4 cm: on</button>
-          <button class="pd-step" type="button" id="sd-fault">Simulate camera dropout</button>
+    <div class="pdemo" id="stop-zones">
+      <div class="pd-top">
+        <div class="pd-steps" role="group" aria-label="Distance step">
+          <button class="pd-step" data-st="0"><i>1</i>RGB frame</button>
+          <button class="pd-step" data-st="1"><i>2</i>YOLO box</button>
+          <button class="pd-step" data-st="2"><i>3</i>Depth frame</button>
+          <button class="pd-step" data-st="3"><i>4</i>Read the box</button>
+          <button class="pd-step" data-st="4"><i>5</i>Distance</button>
         </div>
-        <span class="sd-hint">Drag the person, or press play.</span>
+        <div class="pd-ctl"><button class="btn" id="pdd-replay">Replay</button></div>
       </div>
-      <div class="svgfig"><svg id="sd-band" viewBox="0 0 1000 176" role="img" aria-label="Interactive: drag a person along the distance scale. Within 1.0 m the base stops; it stays stopped until the person is beyond 1.5 m; between the two it keeps its previous state.">
-        <defs><pattern id="hz" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0 V8" stroke="#8b96a7" stroke-opacity=".35" stroke-width="3"/></pattern></defs>
-        <rect x="40" y="46" width="180" height="46" fill="url(#hz)"/>
-        <rect class="sdz" data-z="stop" x="220" y="46" width="120" height="46" fill="#d9534f" fill-opacity=".3"/>
-        <rect class="sdz" data-z="hold" x="340" y="46" width="150" height="46" fill="#e39b4b" fill-opacity=".24"/>
-        <rect class="sdz" data-z="drive" x="490" y="46" width="450" height="46" fill="#56a9a3" fill-opacity=".16"/>
-        <rect x="40" y="46" width="900" height="46" fill="none" stroke="#3a4658"/>
-        <text x="130" y="74" text-anchor="middle" fill="#8b96a7">no reliable depth</text>
-        <text x="280" y="74" text-anchor="middle" fill="#ffb3b0">STOP</text>
-        <text x="415" y="68" text-anchor="middle" fill="#e39b4b">HOLD</text>
-        <text x="415" y="84" text-anchor="middle" fill="#e39b4b" style="font-size:9.5px">keep last state</text>
-        <text x="715" y="74" text-anchor="middle" fill="#56a9a3">DRIVE</text>
-        <path d="M340 34 V100 M490 34 V100" stroke="#e7e2d5" stroke-width="1.5"/>
-        <text x="340" y="26" text-anchor="middle">stop at 1.0 m</text><text x="490" y="26" text-anchor="middle">release at 1.5 m</text>
-        <g fill="#8b96a7"><text x="40" y="116" text-anchor="middle">0</text><text x="220" y="116" text-anchor="middle">0.6</text><text x="340" y="116" text-anchor="middle">1.0</text><text x="490" y="116" text-anchor="middle">1.5</text><text x="640" y="116" text-anchor="middle">2.0</text><text x="790" y="116" text-anchor="middle">2.5</text><text x="940" y="116" text-anchor="middle">3.0 m</text></g>
-        <g id="sd-robot" transform="translate(4 52)"><rect width="30" height="26" rx="3" fill="#5a7896"/><rect x="5" y="-8" width="20" height="9" rx="2" fill="#e39b4b"/><circle cx="7" cy="30" r="4" fill="#8b96a7"/><circle cx="23" cy="30" r="4" fill="#8b96a7"/><circle id="sd-led" cx="15" cy="13" r="5" fill="#56a9a3"/></g>
-        <line id="sd-meas" x1="0" x2="0" y1="42" y2="96" stroke="#e7e2d5" stroke-dasharray="2 3" opacity=".6"/>
-        <g id="sd-person" style="cursor:grab" tabindex="0" role="slider" aria-label="Person distance" aria-valuemin="0.3" aria-valuemax="3" aria-valuenow="2.5">
-          <rect x="-20" y="36" width="40" height="66" fill="transparent"/>
-          <line x1="0" x2="0" y1="40" y2="98" stroke="#e7e2d5" stroke-width="2"/>
-          <circle cx="0" cy="52" r="6" fill="#e7e2d5"/><path d="M0 58 V78 M-8 66 H8 M0 78 L-6 92 M0 78 L6 92" stroke="#e7e2d5" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        </g>
-        <text id="sd-dlabel" x="0" y="140" text-anchor="middle" fill="#e7e2d5">person 2.50 m</text>
-        <text x="940" y="168" text-anchor="end" fill="#8b96a7" style="font-size:10.5px">scale ends at 3 m · camera depth reaches 8 m</text>
-      </svg></div>
-      <div class="sd-cards">
-        <div class="sd-card" id="sd-ours"><small>Our gate · stop 1.0 m, release 1.5 m</small><b>DRIVE</b><span>switches: <em>0</em></span><p></p></div>
-        <div class="sd-card ghost" id="sd-single"><small>Comparison · single threshold at 1.0 m</small><b>DRIVE</b><span>switches: <em>0</em></span><p></p></div>
+      <p class="pd-say" id="pdd-say" aria-live="polite">The Astra Pro gives an RGB frame.</p>
+      <div class="pdd">
+        <div class="pdd-view"><canvas id="pdd-cv" width="640" height="480" role="img" aria-label="Animated: YOLO finds the person in the RGB frame, the same box is laid on the aligned depth frame, the depth values inside the box are read, and the nearest valid depth gives the distance to the person."></canvas><span class="pdd-tag" id="pdd-tag">RGB</span></div>
+        <div class="pdd-side">
+          <div class="pdd-k"><small>Depth pixels in box (1 in 100 shown)</small><b id="pdd-n">–</b></div>
+          <div class="pdd-k"><small>Valid depth</small><b id="pdd-v">–</b><span id="pdd-vc"></span></div>
+          <div class="pdd-hist"><small>Depth values in the box</small><svg id="pdd-h" viewBox="0 0 300 96"></svg></div>
+          <div class="pdd-k big"><small>Nearest valid depth = distance</small><b id="pdd-d">–</b></div>
+          <div class="pdd-gauge"><svg viewBox="0 0 300 64" id="pdd-g">
+            <rect x="10" y="20" width="90" height="20" fill="#d9534f" fill-opacity=".45"/>
+            <rect x="100" y="20" width="45" height="20" fill="#e39b4b" fill-opacity=".38"/>
+            <rect x="145" y="20" width="145" height="20" fill="#56a9a3" fill-opacity=".28"/>
+            <g font-size="9.5" font-family="IBM Plex Mono,monospace" text-anchor="middle"><text x="55" y="34" fill="#ffb3b0">STOP</text><text x="122.5" y="34" fill="#e39b4b">HOLD</text><text x="217" y="34" fill="#56a9a3">DRIVE</text>
+            <g fill="#8b96a7"><text x="10" y="54">0</text><text x="100" y="54">1.0</text><text x="145" y="54">1.5</text><text x="290" y="54">3 m</text></g></g>
+            <g id="pdd-mk" transform="translate(290 0)"><path d="M0 18 L-5 9 H5 Z" fill="#e7e2d5"/><line y1="18" y2="42" stroke="#e7e2d5" stroke-width="2"/></g>
+          </svg></div>
+          <div class="pdd-out" id="pdd-out">–</div>
+        </div>
       </div>
-      <div class="svgfig sd-trace"><svg id="sd-trace" viewBox="0 0 1000 150" aria-label="Last 12 seconds: measured distance and the state of both gates">
-        <g fill="#8b96a7" style="font-size:10.5px"><text x="8" y="14">last 12 s · measured distance</text><text x="992" y="14" text-anchor="end">now</text></g>
-        <path d="M60 71.3 H990" stroke="#ff8d88" stroke-dasharray="3 4" opacity=".6"/><path d="M60 59 H990" stroke="#56a9a3" stroke-dasharray="3 4" opacity=".7"/>
-        <g fill="#8b96a7" style="font-size:10px"><text x="54" y="75" text-anchor="end">1.0</text><text x="54" y="60" text-anchor="end">1.5</text></g>
-        <polyline id="sd-line" fill="none" stroke="#e7e2d5" stroke-width="1.6"/>
-        <g fill="#8b96a7" style="font-size:10px"><text x="54" y="112" text-anchor="end">ours</text><text x="54" y="134" text-anchor="end">single</text></g>
-        <g id="sd-s1"></g><g id="sd-s2"></g>
-      </svg></div>
+      <p class="pd-note">Illustration of the logic in our ROS&nbsp;2 node: the scene is drawn, the rules are the real ones. Between 1.0 and 1.5&nbsp;m the gate keeps its last state, so a person standing at the line cannot make the robot stop–go–stop.</p>
     </div>
-      
     <div class="grid3" style="margin-top:28px" id="fail-safe">
       <div class="card"><h3>Fails safe</h3><p>Also stops if the camera, timing, depth or inference fails.</p></div>
       <div class="card"><h3>Watchdog</h3><p>Zero velocity if the person check goes quiet for 0.3 s.</p></div>
@@ -1834,67 +1813,148 @@ requestAnimationFrame(frame);
 })();
 </script>
 
+
 <script>
-/* Interactive person-safety gate: hysteresis between 1.0 m (stop) and 1.5 m (release). */
+/* Person distance: YOLO box on RGB -> same box on registered depth -> nearest valid depth -> gate. */
 (()=>{
-const band=document.getElementById('sd-band'); if(!band) return;
-const X=d=>40+d*300, D=x=>(x-40)/300, clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-const person=document.getElementById('sd-person'), meas=document.getElementById('sd-meas'), dl=document.getElementById('sd-dlabel'), led=document.getElementById('sd-led');
-const zones=[...band.querySelectorAll('.sdz')];
-const cards={ours:document.getElementById('sd-ours'),single:document.getElementById('sd-single')};
-const bNoise=document.getElementById('sd-noise'), bPlay=document.getElementById('sd-play'), bFault=document.getElementById('sd-fault');
-const line=document.getElementById('sd-line'), s1=document.getElementById('sd-s1'), s2=document.getElementById('sd-s2');
-let d=2.5, m=2.5, noise=true, fault=0, play=null, dragging=false;
-let ours='drive', single='drive', sw={ours:0,single:0}, hist=[], lastNoise=0, reason='';
-function gate(){
-  if(fault>0){ return ['stop','camera stream dropped → zero velocity (fail-safe)']; }
-  if(m<0.6) return ['stop','closer than 0.6 m: depth unreliable → stop'];
-  if(m<1.0) return ['stop','person within 1.0 m → stop'];
-  if(m>1.5) return ['drive','person beyond 1.5 m → drive'];
-  return [ours, ours==='stop'?'1.0–1.5 m: hold — stay stopped until 1.5 m':'1.0–1.5 m: hold — keep driving until 1.0 m'];
-}
-function step(now){
-  if(noise && now-lastNoise>100){ lastNoise=now; const g=(Math.random()+Math.random()+Math.random()-1.5)*0.046; m=clamp(d+g,0.3,3); }
-  else if(!noise) m=d;
-  if(fault>0) fault=Math.max(0,fault-1);
-  const [o,r]=gate(); if(o!==ours){ours=o;sw.ours++;} reason=r;
-  const sg = (fault>0||m<1.0)?'stop':'drive'; if(sg!==single){single=sg;sw.single++;}
-  hist.push([m,ours,single]); if(hist.length>240) hist.shift();
-}
-function draw(){
-  person.setAttribute('transform',`translate(${X(d)} 0)`); person.setAttribute('aria-valuenow',d.toFixed(2));
-  meas.setAttribute('x1',X(m)); meas.setAttribute('x2',X(m));
-  dl.setAttribute('x',clamp(X(d),70,900)); dl.textContent=`person ${d.toFixed(2)} m · measured ${m.toFixed(2)} m`;
-  const z = m<1.0?'stop':m>1.5?'drive':'hold'; zones.forEach(r=>r.classList.toggle('cur',r.dataset.z===z && m>=0.6));
-  led.setAttribute('fill', ours==='stop'?'#ff6b66':'#56a9a3');
-  bFault.classList.toggle('on',fault>0);
-  for(const [k,st] of [['ours',ours],['single',single]]){
-    const c=cards[k], b=c.querySelector('b'); b.textContent=st==='stop'?'STOP':'DRIVE'; b.classList.toggle('stop',st==='stop');
-    c.querySelector('em').textContent=sw[k];
+const cv=document.getElementById('pdd-cv'); if(!cv) return;
+const ctx=cv.getContext('2d'), W=320, H=240, S=2;
+const root=document.getElementById('stop-zones');
+const say=document.getElementById('pdd-say'), tag=document.getElementById('pdd-tag');
+const steps=[...root.querySelectorAll('.pd-step')];
+const elN=document.getElementById('pdd-n'), elV=document.getElementById('pdd-v'), elVc=document.getElementById('pdd-vc'), elD=document.getElementById('pdd-d'), out=document.getElementById('pdd-out'), mk=document.getElementById('pdd-mk'), hsvg=document.getElementById('pdd-h');
+// ---- synthetic scene: RGB drawn with paths at 640x480; depth sampled from the same shapes at 320x240 ----
+let seed=7; const rnd=()=>((seed=(seed*16807)%2147483647)/2147483647);
+const RW=640, RH=480, HOR=256, cx=428;
+const mk2=()=>{const c=document.createElement('canvas');c.width=RW;c.height=RH;return c;};
+const shape={
+  head:g=>{g.beginPath();g.ellipse(cx,92,33,40,0,0,7);g.fill();},
+  neck:g=>{g.fillRect(cx-14,120,28,30);},
+  torso:g=>{g.beginPath();g.moveTo(cx-58,150);g.quadraticCurveTo(cx-86,152,cx-88,190);g.lineTo(cx-76,322);g.lineTo(cx+76,322);g.lineTo(cx+88,190);g.quadraticCurveTo(cx+86,152,cx+58,150);g.quadraticCurveTo(cx,168,cx-58,150);g.fill();},
+  arms:g=>{for(const sg of [-1,1]){g.save();g.translate(cx+sg*90,168);g.rotate(sg*-0.06);g.beginPath();g.roundRect(-15,0,30,150,14);g.fill();g.restore();}},
+  hands:g=>{for(const sg of [-1,1]){g.beginPath();g.ellipse(cx+sg*99,326,13,17,0,0,7);g.fill();}},
+  legs:g=>{g.beginPath();g.roundRect(cx-70,312,60,180,8);g.roundRect(cx+10,312,60,180,8);g.fill();},
+  desk:g=>{g.fillRect(52,206,250,20);g.fillRect(64,226,14,118);g.fillRect(276,226,14,118);g.fillRect(120,176,64,30);g.fillRect(186,184,34,22);},
+  win:g=>{g.fillRect(508,36,124,148);}
+};
+const masks={};
+for(const k in shape){const c=mk2(),g=c.getContext('2d');g.fillStyle='#fff';shape[k](g);masks[k]=g.getImageData(0,0,RW,RH).data;}
+const inM=(k,x,y)=>{x=Math.round(x);y=Math.round(y);if(x<0||y<0||x>=RW||y>=RH)return false;return masks[k][(y*RW+x)*4+3]>127;};
+const personParts=['head','neck','hands','arms','legs','torso'];
+const isPerson=(x,y)=>personParts.some(k=>inM(k,x,y));
+// RGB
+const rgbC=mk2(); (function(){const g=rgbC.getContext('2d');
+  let gr=g.createLinearGradient(0,0,0,HOR);gr.addColorStop(0,'#cfc7b6');gr.addColorStop(1,'#bdb5a3');g.fillStyle=gr;g.fillRect(0,0,RW,HOR);
+  gr=g.createLinearGradient(0,HOR,0,RH);gr.addColorStop(0,'#8d8372');gr.addColorStop(1,'#a99d88');g.fillStyle=gr;g.fillRect(0,HOR,RW,RH-HOR);
+  g.fillStyle='#e9e4d8';g.fillRect(0,HOR-8,RW,8);
+  g.fillStyle='#dde9f2';g.fillRect(508,36,124,148);g.strokeStyle='#f4f1ea';g.lineWidth=8;g.strokeRect(508,36,124,148);g.beginPath();g.moveTo(570,36);g.lineTo(570,184);g.stroke();
+  g.fillStyle='rgba(0,0,0,.18)';g.beginPath();g.ellipse(176,346,140,10,0,0,7);g.fill();g.beginPath();g.ellipse(cx,486,120,16,0,0,7);g.fill();
+  g.fillStyle='#9c6c44';shape.desk(g);g.fillStyle='#b9845a';g.fillRect(52,206,250,8);
+  g.fillStyle='#9a3a33';g.fillRect(120,176,64,30);g.fillStyle='#3f6e8c';g.fillRect(186,184,34,22);
+  g.fillStyle='#2a2f3b';shape.legs(g);
+  g.fillStyle='#2f5f9e';shape.arms(g);
+  gr=g.createLinearGradient(cx-90,0,cx+90,0);gr.addColorStop(0,'#2a548c');gr.addColorStop(.5,'#3a72bd');gr.addColorStop(1,'#2a548c');g.fillStyle=gr;shape.torso(g);
+  g.fillStyle='#d2a283';shape.neck(g);shape.hands(g);shape.head(g);
+  g.fillStyle='#3b2a20';g.beginPath();g.ellipse(cx,66,34,20,0,Math.PI,0);g.fill();
+  const im=g.getImageData(0,0,RW,RH);for(let i=0;i<im.data.length;i+=4){const n=(rnd()-0.5)*9;im.data[i]+=n;im.data[i+1]+=n;im.data[i+2]+=n;}g.putImageData(im,0,0);
+})();
+function turbo(t){t=Math.max(0,Math.min(1,t));const r=34.61+t*(1172.33+t*(-10793.56+t*(33300.12+t*(-38394.49+t*14825.05))));const g=23.31+t*(557.33+t*(1225.33+t*(-3574.96+t*(1073.77+t*707.56))));const b=27.2+t*(3211.1+t*(-15327.97+t*(27814+t*(-22569.18+t*6838.66))));return [r,g,b].map(v=>Math.max(0,Math.min(255,v|0)));}
+const dcol=z=>turbo(0.08+0.84*(1-(z-0.6)/3.9));
+// depth 320x240, same pixels as RGB (registered)
+const depC=document.createElement('canvas'); depC.width=W; depC.height=H;
+const zmap=new Float32Array(W*H);
+(function(){const di=depC.getContext('2d').createImageData(W,H);
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){const X=x*2+1,Y=y*2+1;let z;
+    if(inM('head',X,Y)||inM('neck',X,Y)) z=0.99;
+    else if(inM('hands',X,Y)||inM('arms',X,Y)) z=0.97;
+    else if(inM('torso',X,Y)) z=0.94+Math.abs(X-cx)/88*0.05;
+    else if(inM('legs',X,Y)) z=0.96+(Y-312)/170*0.05;
+    else if(inM('desk',X,Y)) z=2.6;
+    else if(Y<HOR) z=4.3+((X-320)**2)/700000;
+    else z=Math.min(4.3,1.18*240/(Y-HOR+14));
+    const person=z<1.2;
+    if(!person&&(isPerson(X+8,Y)||isPerson(X+14,Y))&&Y>50) z=0;   // occlusion shadow left of the person
+    if(inM('win',X,Y)&&rnd()<0.8) z=0;                              // window glare
+    if(rnd()<0.006) z=0;                                            // dropouts
+    zmap[y*W+x]=z; const i=(y*W+x)*4, c=z?dcol(z+(rnd()-0.5)*0.03):[0,0,0];
+    di.data[i]=c[0];di.data[i+1]=c[1];di.data[i+2]=c[2];di.data[i+3]=255;}
+  depC.getContext('2d').putImageData(di,0,0);})();
+const box={x1:162,y1:22,x2:268,y2:240};
+// sample grid inside the box (every 7 px)
+const pts=[]; for(let y=box.y1+5;y<box.y2-2;y+=10)for(let x=box.x1+5;x<box.x2-2;x+=10){const z=zmap[y*W+x];pts.push({x,y,z,ok:z>=0.05&&z<=10});}
+const valid=pts.filter(p=>p.ok), nearest=valid.reduce((a,b)=>b.z<a.z?b:a);
+const D=Math.round(nearest.z*100)/100;
+// histogram bins 0..5 m
+const bins=new Array(25).fill(0); valid.forEach(p=>bins[Math.min(24,Math.floor(p.z/0.2))]++); const bmax=Math.max(...bins);
+hsvg.innerHTML=bins.map((c,i)=>`<rect class="hb" x="${10+i*11.2}" y="76" width="9" height="0" data-h="${(c/bmax*62).toFixed(1)}" fill="rgb(${dcol(i*0.2+0.1).join(',')})"/>`).join('')+
+ `<line x1="10" x2="290" y1="76.5" y2="76.5" stroke="#3a4658"/><g font-size="9" font-family="IBM Plex Mono,monospace" fill="#8b96a7"><text x="10" y="90">0</text><text x="66" y="90">1</text><text x="122" y="90">2</text><text x="178" y="90">3</text><text x="234" y="90">4</text><text x="282" y="90">5 m</text><text x="118" y="14" fill="#e7e2d5" id="pdd-hl" opacity="0">person ≈ 1 m · background ≈ 4 m</text></g>`;
+const hbars=[...hsvg.querySelectorAll('.hb')], hl=document.getElementById('pdd-hl');
+// ---- timeline ----
+const T=[0,1.6,3.6,5.8,9.0,12.4], END=13.8;
+const SAY=['The Astra Pro gives an RGB frame.',
+ 'YOLO11n finds the person and returns a box (x1, y1, x2, y2).',
+ 'Switch to the depth frame. It is registered to RGB, so the same box covers the same pixels.',
+ `Read the depth values of the pixels inside the box (no point cloud needed). Holes (black) and values outside 0.05–10 m are dropped; at least 9 pixels and half the box must be valid, or the gate fails safe.`,
+ `The nearest valid depth in the box is the distance to the person: ${D.toFixed(2)} m, inside 1.0 m → STOP.`];
+let t0=null, frozen=null, vis=false, raf=0;
+const ease=u=>u<0?0:u>1?1:u*u*(3-2*u);
+function stepOf(t){let k=0;for(let i=0;i<5;i++)if(t>=T[i])k=i;return k;}
+function draw(t){
+  const k=stepOf(t);
+  // base image + wipe
+  ctx.imageSmoothingEnabled=true; ctx.drawImage(rgbC,0,0,W*S,H*S); ctx.imageSmoothingEnabled=false;
+  const w=ease((t-T[2])/1.4);
+  if(w>0){ctx.save();ctx.beginPath();ctx.rect(0,0,W*S*w,H*S);ctx.clip();ctx.drawImage(depC,0,0,W*S,H*S);ctx.restore();
+    if(w<1){ctx.fillStyle='#e7e2d5';ctx.fillRect(W*S*w-1.5,0,3,H*S);}}
+  tag.textContent= w>=1?'DEPTH (registered to RGB)': w>0?'RGB → DEPTH':'RGB';
+  // dim outside box
+  const dimA=ease((t-T[3])/0.6)*0.62;
+  if(dimA>0){ctx.fillStyle=`rgba(5,8,12,${dimA})`;ctx.fillRect(0,0,W*S,box.y1*S);ctx.fillRect(0,box.y1*S,box.x1*S,(box.y2-box.y1)*S);ctx.fillRect(box.x2*S,box.y1*S,(W-box.x2)*S,(box.y2-box.y1)*S);}
+  // box draw-in
+  const b=ease((t-T[1])/0.9);
+  if(b>0){const x1=box.x1*S,y1=box.y1*S,x2=box.x2*S-1,y2=box.y2*S-2,L=(x2-x1+y2-y1)*2*b;
+    ctx.strokeStyle='#e39b4b';ctx.lineWidth=3;ctx.beginPath();
+    let rem=L;const seg=[[x1,y1,x2,y1],[x2,y1,x2,y2],[x2,y2,x1,y2],[x1,y2,x1,y1]];ctx.moveTo(x1,y1);
+    for(const [ax,ay,bx,by] of seg){const len=Math.hypot(bx-ax,by-ay);if(rem<=0)break;const u=Math.min(1,rem/len);ctx.lineTo(ax+(bx-ax)*u,ay+(by-ay)*u);rem-=len;}
+    ctx.stroke();
+    if(b>=1){ctx.fillStyle='#e39b4b';ctx.fillRect(x1-1.5,y1-22,118,22);ctx.fillStyle='#0e131b';ctx.font='600 13px IBM Plex Mono,monospace';ctx.fillText('person 0.91',x1+6,y1-6);}
   }
-  cards.ours.querySelector('p').textContent=reason;
-  cards.single.querySelector('p').textContent = sw.single>sw.ours+3 ? 'chatters on depth noise near 1.0 m: stop–go–stop' : 'stops below 1.0 m, drives otherwise';
-  const n=hist.length, x0=990-(n-1)*(930/239);
-  line.setAttribute('points',hist.map((h,i)=>`${(x0+i*930/239).toFixed(1)},${(96-h[0]/3*74).toFixed(1)}`).join(' '));
-  const seg=(g,idx,y)=>{let out='',start=0;for(let i=1;i<=n;i++){if(i===n||hist[i][idx]!==hist[start][idx]){const xa=x0+start*930/239, xb=x0+(i-1)*930/239+930/239;out+=`<rect x="${xa.toFixed(1)}" y="${y}" width="${Math.max(1,xb-xa).toFixed(1)}" height="12" fill="${hist[start][idx]==='stop'?'#d9534f':'#56a9a3'}" fill-opacity=".75"/>`;start=i;}}g.innerHTML=out;};
-  if(n){seg(s1,1,102);seg(s2,2,124);}
+  // points in box
+  const p=(t-T[3]-0.4)/1.8;
+  let shown=0,shownValid=0;
+  if(p>0){const lim=Math.min(pts.length,Math.floor(pts.length*Math.min(1,p)));
+    const fadeBg=ease((t-T[4])/0.8);
+    for(let i=0;i<lim;i++){const q=pts[i],X=q.x*S,Y=q.y*S;shown++;
+      if(!q.ok){ctx.strokeStyle='#8b96a7';ctx.lineWidth=1.3;ctx.beginPath();ctx.moveTo(X-3,Y-3);ctx.lineTo(X+3,Y+3);ctx.moveTo(X+3,Y-3);ctx.lineTo(X-3,Y+3);ctx.stroke();continue;}
+      shownValid++;
+      const far=q.z>nearest.z+0.5;ctx.globalAlpha=far?1-0.75*fadeBg:1;
+      ctx.fillStyle=`rgb(${dcol(q.z).join(',')})`;ctx.beginPath();ctx.arc(X,Y,4.2,0,7);ctx.fill();ctx.strokeStyle='rgba(255,255,255,.85)';ctx.lineWidth=1.4;ctx.stroke();ctx.globalAlpha=1;}
+  }
+  // nearest highlight
+  const nA=ease((t-T[4]-0.5)/0.6);
+  if(nA>0){const X=nearest.x*S,Y=nearest.y*S,r=8+10*(1-nA)+3*Math.sin(t*6);ctx.strokeStyle='#ffffff';ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(X,Y,r,0,7);ctx.stroke();
+    ctx.fillStyle='#0e131bdd';ctx.fillRect(X+14,Y-16,92,24);ctx.fillStyle='#ffffff';ctx.font='600 14px IBM Plex Mono,monospace';ctx.fillText(D.toFixed(2)+' m',X+22,Y+1);}
+  // side panel
+  elN.textContent= shown?shown:'–';
+  elV.textContent= shown?shownValid:'–';
+  elVc.textContent= p>=1?`${Math.round(valid.length/pts.length*100)} % valid · ≥ 9 ✓ · ≥ 50 % ✓`:'';
+  const hp=ease((t-T[3]-0.4)/1.8);
+  hbars.forEach(r=>{const h=r.dataset.h*hp;r.setAttribute('height',h.toFixed(1));r.setAttribute('y',(76-h).toFixed(1));});
+  hl.setAttribute('opacity',hp>=1?1:0);
+  const g=ease((t-T[4]-0.6)/1.4);
+  elD.textContent= g>0?(3-(3-D)*g).toFixed(2)+' m':'–';
+  mk.setAttribute('transform',`translate(${(10+(3-(3-D)*g)/3*280).toFixed(1)} 0)`);
+  const stop=g>=1; out.textContent= stop?'STOP · zero velocity':(g>0?'…':'–'); out.classList.toggle('stop',stop);
+  steps.forEach((s,i)=>{s.classList.toggle('on',i===k);s.classList.toggle('done',i<k);});
+  if(say.dataset.k!=k){say.dataset.k=k;say.textContent=SAY[k];}
 }
-function pt(e){const r=band.getBoundingClientRect();return D((e.clientX-r.left)/r.width*1000);}
-band.addEventListener('pointerdown',e=>{dragging=true;stopPlay();d=clamp(pt(e),0.3,3);band.setPointerCapture(e.pointerId);});
-band.addEventListener('pointermove',e=>{if(dragging)d=clamp(pt(e),0.3,3);});
-band.addEventListener('pointerup',()=>dragging=false);
-person.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'){d=clamp(d-0.05,0.3,3);e.preventDefault();stopPlay();}if(e.key==='ArrowRight'){d=clamp(d+0.05,0.3,3);e.preventDefault();stopPlay();}});
-bNoise.addEventListener('click',()=>{noise=!noise;bNoise.setAttribute('aria-pressed',noise);bNoise.textContent=`Depth noise ±4 cm: ${noise?'on':'off'}`;});
-bFault.addEventListener('click',()=>{fault=40;});
-const script=[[0,2.8],[2.2,1.25],[3.6,1.25],[4.6,0.85],[5.8,0.85],[6.6,1.02],[9.2,1.02],[10.0,1.3],[11.6,1.3],[12.6,1.75],[13.6,2.7]];
-function stopPlay(){play=null;bPlay.innerHTML='&#9654; Play a walk-past';}
-bPlay.addEventListener('click',()=>{ if(play){stopPlay();return;} play={t0:performance.now()}; sw={ours:0,single:0}; hist=[]; bPlay.textContent='■ Stop'; });
-function scripted(now){const t=(now-play.t0)/1000; if(t>script[script.length-1][0]){stopPlay();return;}
-  for(let i=1;i<script.length;i++){const [ta,da]=script[i-1],[tb,db]=script[i]; if(t<=tb){const u=(t-ta)/(tb-ta); d=da+(db-da)*(u<0?0:u); break;}}}
-let last=0, vis=false;
-new IntersectionObserver(es=>{vis=es[0].isIntersecting;},{threshold:.1}).observe(band);
-function loop(now){ if(vis){ if(play) scripted(now); if(now-last>50){ last=now; step(now); draw(); } } requestAnimationFrame(loop); }
-draw(); requestAnimationFrame(loop);
+function loop(now){ if(!vis){raf=0;return;} if(t0===null)t0=now; let t=frozen!==null?frozen:(now-t0)/1000; if(frozen===null&&t>END){t0=now;t=0;} draw(t); raf=requestAnimationFrame(loop);}
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+steps.forEach((s,i)=>s.addEventListener('click',()=>{frozen=null;t0=performance.now()-T[i]*1000; if(i===4){} if(reduce){frozen=T[i+1]-0.01;} if(!raf){vis=true;raf=requestAnimationFrame(loop);} }));
+document.getElementById('pdd-replay').addEventListener('click',()=>{frozen=reduce?END-0.5:null;t0=performance.now(); if(!raf){vis=true;raf=requestAnimationFrame(loop);}});
+if(reduce){frozen=END-0.5;}
+new IntersectionObserver(es=>{const v=es[0].isIntersecting; if(v&&!vis){vis=true;if(frozen===null)t0=null;raf=requestAnimationFrame(loop);} else if(!v) vis=false;},{threshold:.3}).observe(root);
+draw(reduce?END-0.5:0);
 })();
 </script>
 </body>
