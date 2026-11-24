@@ -440,6 +440,7 @@ section.alt .nd,section.alt .card,section.alt .aiphase{background:#162030}
   .kpis a:nth-child(2){animation-delay:.36s}.kpis a:nth-child(3){animation-delay:.44s}.kpis a:nth-child(4){animation-delay:.52s}.kpis a:nth-child(5){animation-delay:.6s}
   .kpis a:first-child{animation-delay:.28s}
 }
+.bomd summary{cursor:pointer;font:500 .8rem var(--font-mono);color:var(--amber);padding:10px 0}
 /* tbc */
 .tbc{border:1.5px dashed var(--line);padding:24px}
 .tbc ul{margin:12px 0 0;padding-left:18px;color:var(--muted);display:grid;gap:6px}
@@ -501,7 +502,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <div class="callno"><b>629.892</b> IC382 · GROUP A06 · DESIGN SUBMISSION</div>
       <h1>A robot that <em>clears</em><br>library desks</h1>
       <p class="lede">It patrols the reading room, works out which desks are free, flies a drone over each one, and sorts every object it finds into public property, personal property or waste.</p>
-      <p class="lede">The model on the right is our upper assembly, loaded from the same URDF we use in Isaac Sim. The demo takes a tag from one of the three slots at the side, raises the arm, turns to the front and sets the tag down. Drag to orbit, move the joints yourself, or explode the model into its six links.</p>
+      <p class="lede">Right: our upper assembly from its URDF. Drag to orbit, move the joints, or explode it.</p>
     </div>
 
     <div class="viewer" id="mechanical-viewer">
@@ -545,13 +546,13 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <p class="intro">The chassis decides where to go and the upper assembly decides what to do at each desk. A state machine hands control between them. The stamp on every stage says how far it has got.</p>
     </div>
     <div class="loop">
-      <div class="st"><span class="n">01 · before the run</span><h3>Survey</h3><p>Scan the floor with a 3D scanner and place three kinds of point: waypoints, operation points and observation points.</p><span class="who">Chassis</span><span class="chip s-tbc">In progress</span></div>
-      <div class="st"><span class="n">02</span><h3>Localise</h3><p>Match live depth point clouds against the map and fuse the result with wheel odometry.</p><span class="who">Chassis</span><span class="chip s-proto">Simulated</span></div>
-      <div class="st"><span class="n">03</span><h3>Check seats</h3><p>At observation points, look for human legs beside each desk's legs. Occupied desks are skipped for the rest of the patrol.</p><span class="who">Chassis</span><span class="chip s-tbc">In progress</span></div>
-      <div class="st"><span class="n">04</span><h3>Travel</h3><p>Pick the next free desk from what was observed and drive there with Nav2.</p><span class="who">Chassis</span><span class="chip s-tbc">In progress</span></div>
-      <div class="st up"><span class="n">05</span><h3>Inspect</h3><p>Skip desks marked "reserved". Otherwise announce the take-off, launch the drone and photograph the desktop from above.</p><span class="who">Upper</span><span class="chip s-tbc">In progress</span></div>
-      <div class="st up"><span class="n">06</span><h3>Classify</h3><p>Find every object, outline it with a four-point box and label it public, personal or waste.</p><span class="who">Upper</span><span class="chip s-tested">Tested</span></div>
-      <div class="st up"><span class="n">07</span><h3>Act</h3><p>Plan a collision-free arm path to each object and place the matching tag.</p><span class="who">Upper</span><span class="chip s-proto">Simulated</span></div>
+      <div class="st"><span class="n">01 · before the run</span><h3>Survey</h3><p>3D-scan the room; mark waypoints, operation and observation points.</p><span class="who">Chassis</span><span class="chip s-tbc">In progress</span></div>
+      <div class="st"><span class="n">02</span><h3>Localise</h3><p>Depth clouds matched to the map, fused with wheel odometry.</p><span class="who">Chassis</span><span class="chip s-proto">Simulated</span></div>
+      <div class="st"><span class="n">03</span><h3>Check seats</h3><p>Human legs under a desk mean occupied: skip it.</p><span class="who">Chassis</span><span class="chip s-tbc">In progress</span></div>
+      <div class="st"><span class="n">04</span><h3>Travel</h3><p>Drive to the next free desk with Nav2.</p><span class="who">Chassis</span><span class="chip s-tbc">In progress</span></div>
+      <div class="st up"><span class="n">05</span><h3>Inspect</h3><p>Skip reserved desks; otherwise fly the drone and photograph the desk.</p><span class="who">Upper</span><span class="chip s-tbc">In progress</span></div>
+      <div class="st up"><span class="n">06</span><h3>Classify</h3><p>Find each object; label it public, personal or waste.</p><span class="who">Upper</span><span class="chip s-tested">Tested</span></div>
+      <div class="st up"><span class="n">07</span><h3>Act</h3><p>Plan a collision-free arm path and place the tag.</p><span class="who">Upper</span><span class="chip s-proto">Simulated</span></div>
     </div>
     <div class="guard" id="loop-guard"><b>Always on: person safety layer.</b> Every velocity command passes through a ROS 2 node that stops the base when a person comes within 1.0 m. <span class="chip s-tested">41 logic tests pass</span></div>
   </div>
@@ -564,7 +565,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <div class="callno"><b>629.892 .02</b> SOFTWARE ARCHITECTURE</div>
       <h2>Two stacks, one state machine</h2>
       <span class="stamp s-proto">Partly built</span>
-      <p class="intro">The chassis stack decides where the robot goes; the upper stack decides what it does at each desk. The state machine in the middle runs the loop and hands control between them. Pick a state to see which modules it uses and what it passes on.</p>
+      <p class="intro">Chassis decides where to go, upper stack decides what to do. Pick a state to see which modules it uses.</p>
     </div>
     <div class="sw">
       <div class="lane" id="chassis-stack"><div class="lh"><b>Chassis stack</b><span>where to go</span></div><div class="nodes"><div class="nd" data-m="map"><b>Pre-built map</b><span>3D scan with waypoints, operation points and observation points</span><span class="chip s-tbc">TBC</span></div><div class="nd" data-m="loc"><b>Localisation</b><span>NDT map matching on depth clouds, wheel-odometry prediction; 4.5 cm in sim</span><span class="chip s-proto">Prototype</span></div><div class="nd" data-m="occ"><b>Occupancy</b><span>Human legs beside desk legs mark a desk occupied</span><span class="chip s-tbc">TBC</span></div><div class="nd" data-m="route"><b>Route choice</b><span>Next free desk from what was observed</span><span class="chip s-tbc">TBC</span></div><div class="nd" data-m="nav"><b>Nav2</b><span>Drives between chosen points</span><span class="chip s-tbc">TBC</span></div><div class="nd" data-m="safe"><b>Safety gate</b><span>YOLO11n + RGB-D depth; stops within 1.0 m</span><span class="chip s-tested">Built</span></div><div class="nd" data-m="base"><b>Base driver</b><span>Accepts only /cmd_vel_safe</span><span class="chip s-tbc">TBC</span></div></div></div>
@@ -589,7 +590,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <div class="callno"><b>629.892 .03</b> MECHANICAL</div>
       <h2>Upper assembly on a two-wheel base</h2>
       <span class="stamp s-proto">CAD complete · chassis model to follow</span>
-      <p class="intro">The upper assembly sits on a differential-drive base. A lift raises the arm, two yaw joints swing it over the desk, an aluminium tube telescopes outward, and a rack at the tip lowers the suction cup onto the object.</p>
+      <p class="intro">Lift, two yaw joints, a telescoping tube and a rack with a suction cup.</p>
     </div>
     <div class="grid2" id="joints">
       <div>
@@ -604,7 +605,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
             <path class="ld" d="M366 500 L420 556"/><text x="426" y="566">suction cup</text>
             <path class="ld" d="M20 566 H70 M20 561 V571 M70 561 V571"/><text x="78" y="570">50 mm</text>
           </svg>
-          <figcaption><b>Top view at zero pose.</b> Rendered from the CAD meshes; lighter shades sit higher. The demo above dips the tip into one of the three slots, then swings it to the front.</figcaption>
+          <figcaption><b>Top view at zero pose.</b> Rendered from the CAD meshes.</figcaption>
         </figure>
       </div>
       <div>
@@ -620,20 +621,10 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
             </tbody>
           </table>
         </div>
-        <p style="color:var(--muted);font-size:.86rem;margin-top:10px">Ranges are measured from the exported assembly pose. Lift and yaw ranges are the design values; the URDF still carries smaller trial limits for first tests in Isaac Sim. Masses and inertias are estimated from geometry. *The URDF carries a ±15 mm trial limit; the full rack travel is still to be confirmed.</p>
-      <div class="prose" style="margin-top:24px">
-        <dl class="kv">
-          <dt>Source</dt><dd>SolidWorks assembly, exported to URDF with 6 visual meshes and 29 simplified collision meshes</dd>
-          <dt>Envelope</dt><dd class="mono">≈ 0.57 × 0.50 × 0.61 m (upper assembly, zero pose)</dd>
-          <dt>Frame</dt><dd>Metres, Z up, origin at the bottom centre of the mounting plate</dd>
-          <dt>End effector</dt><dd>Rack driven directly by a pinion that travels with the telescoping stage</dd>
-          <dt>Simulation</dt><dd>Imports into Isaac Sim as a fixed-base asset for joint tests, or a floating base when mounted on the chassis USD</dd>
-          <dt>On this page</dt><dd>The hero model uses the visual meshes, welded at 0.5 mm, and the joint origins and axes from the URDF</dd>
-        </dl>
+        <p style="color:var(--muted);font-size:.86rem;margin-top:10px">*Full rack travel to be confirmed.</p>
       </div>
     </div>
-    </div>
-    <div class="subhead" id="shoulder"><h3>Shoulder joint in section</h3><p>The steel arm turns on a vertical shaft. A thrust bearing takes the arm's weight, a deep-groove bearing keeps the shaft true, and a timing pulley at the bottom brings in the drive.</p></div>
+    <div class="subhead" id="shoulder"><h3>Shoulder joint in section</h3></div>
     <div class="section-fig">
       <figure class="figo">
         <img src="media/shoulder-section.png" alt="CAD cross-section of the shoulder joint, numbered parts listed beside it" width="866" height="973">
@@ -650,19 +641,19 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         </svg>
       </figure>
       <ol class="legend">
-        <li><i>1</i><div>Steel arm<span>Square steel section with a welded mounting disc</span></div></li>
-        <li><i>2</i><div>Flange<span>Split flange shaft support under the arm</span></div></li>
-        <li><i>3</i><div>Shaft collar<span>Fixes the shaft axially</span></div></li>
-        <li><i>4</i><div>Thrust ball bearing<span>Carries the arm's weight so it turns freely in the horizontal plane</span></div></li>
-        <li><i>5</i><div>Deep-groove ball bearing<span>Radial support that keeps the shaft upright</span></div></li>
-        <li><i>6</i><div>Timing pulley<span>Belt drive input from the stepper motor</span></div></li>
-        <li><i>7</i><div>Shaft<span>Chrome-plated hardened steel shaft through the whole stack</span></div></li>
-        <li><i>8</i><div>3D-printed supports<span>Every support layer is printed</span></div></li>
-        <li><i>9</i><div>Aluminium plate<span>Base of the support structure</span></div></li>
+        <li><i>1</i><div>Steel arm</div></li>
+        <li><i>2</i><div>Flange</div></li>
+        <li><i>3</i><div>Shaft collar</div></li>
+        <li><i>4</i><div>Thrust ball bearing</div></li>
+        <li><i>5</i><div>Deep-groove ball bearing</div></li>
+        <li><i>6</i><div>Timing pulley</div></li>
+        <li><i>7</i><div>Shaft</div></li>
+        <li><i>8</i><div>3D-printed supports</div></li>
+        <li><i>9</i><div>Aluminium plate</div></li>
       </ol>
     </div>
 
-    <div class="subhead" id="hardware"><h3>From CAD to hardware</h3><p>The lift, the arm and the end effector are built and moving by hand and on the bench.</p></div>
+    <div class="subhead" id="hardware"><h3>From CAD to hardware</h3></div>
     <div class="gal g-land">
       <figure><img src="media/assembly.jpg" alt="Assembled lift columns, sheet-metal plates and steel arm on the shoulder joint" width="1280" height="960"><figcaption><b>Assembled.</b> Lift columns, sheet-metal platform and the steel arm on its shoulder joint.</figcaption></figure>
       <figure><video src="media/shoulder-test.mp4" poster="media/shoulder-test.jpg" width="960" height="540" muted loop playsinline autoplay preload="metadata" controls></video><figcaption><span class="vtagm">Video</span><b>Shoulder test.</b> The arm swinging on its shoulder joint.</figcaption></figure>
@@ -682,7 +673,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <div class="callno"><b>629.892 .04</b> ELECTRICAL</div>
       <h2>PC supervises, STM32 drives six actuator branches</h2>
       <span class="stamp s-proto">Architecture fixed</span>
-      <p class="intro">One DC supply feeds the PC and every actuator branch. The STM32 turns PC commands into separate control channels and reads angle feedback back from both steppers and the servo.</p>
+      <p class="intro">One DC supply, six actuator branches, angle feedback back to the STM32.</p>
     </div>
     <div class="efilters" role="group" aria-label="Highlight connections">
       <button class="btn" data-f="all" aria-pressed="true">All</button>
@@ -801,11 +792,11 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       </svg>
     </div>
     <div class="changes" id="elec-revisions">
-      <div><span class="chip s-proto">Revised</span><span>The ToF sensor module and its 12–24 V branch are removed from the architecture.</span></div>
-      <div><span class="chip s-proto">Revised</span><span>The servo is now a feedback servo; its position signal returns to the STM32 alongside the two AS5600 channels.</span></div>
-      <div><span class="chip s-proto">Revised</span><span>The pump and valve MOSFET modules come from a kit with servo-style PWM inputs; they share a multi-channel PWM board with the servo.</span></div>
-      <div><span class="chip s-tbc">Planned</span><span>The H-bridge and linear actuator branch (dashed) will be built next semester.</span></div>
-      <div><span class="chip s-tbc">To add</span><span>Schematics, PCB layout and the power budget will be linked here.</span></div>
+      <div><span class="chip s-proto">Revised</span><span>ToF module removed.</span></div>
+      <div><span class="chip s-proto">Revised</span><span>Servo replaced by a feedback servo.</span></div>
+      <div><span class="chip s-proto">Revised</span><span>Pump and valve on PWM MOSFET modules.</span></div>
+      <div><span class="chip s-tbc">Planned</span><span>Linear actuator branch (dashed): next semester.</span></div>
+      
     </div>
   </div>
 </section>
@@ -817,18 +808,18 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <div class="callno"><b>629.892 .05</b> EMBEDDED CONTROL</div>
       <h2>Six actuator branches, four already under control</h2>
       <span class="stamp s-proto">4 of 6 running</span>
-      <p class="intro">The servo, the air pump and the solenoid valve all take standard servo-style PWM, so they share one multi-channel PWM board with a separate control pin per channel. The steppers get their own pulse firmware on the STM32F407.</p>
+      <p class="intro">Servo, pump and valve share one PWM board; the steppers run our own STM32 firmware.</p>
     </div>
     <div id="actuators" class="tbl act" style="margin-bottom:44px">
       <table>
-        <thead><tr><th>Actuator</th><th>Driven through</th><th>Control signal</th><th>Status</th></tr></thead>
+        <thead><tr><th>Actuator</th><th>Driven through</th><th>Status</th></tr></thead>
         <tbody>
-          <tr><td>Feedback servo</td><td>Multi-channel PWM board</td><td>Standard servo PWM; position fed back to the STM32</td><td><span class="chip s-tested">Controlled</span></td></tr>
-          <tr><td>Mini air pump</td><td>Kit MOSFET module (servo-style PWM input) on the PWM board</td><td>Standard servo PWM</td><td><span class="chip s-tested">Controlled</span></td></tr>
-          <tr><td>Solenoid valve</td><td>Kit MOSFET module (servo-style PWM input) on the PWM board</td><td>Standard servo PWM</td><td><span class="chip s-tested">Controlled</span></td></tr>
-          <tr><td>Stepper motor 1</td><td>STM32F407 → ISS1-57 closed-loop driver</td><td>PUL / DIR pulses, firmware v1.1</td><td><span class="chip s-tested">Bench-verified</span></td></tr>
-          <tr><td>Stepper motor 2</td><td>STM32F407 → stepper driver 2</td><td>PUL / DIR pulses</td><td><span class="chip s-proto">In development</span></td></tr>
-          <tr><td>Linear actuator</td><td>H-bridge</td><td>Direction and enable</td><td><span class="chip s-tbc">Next semester</span></td></tr>
+          <tr><td>Feedback servo</td><td>PWM board</td><td><span class="chip s-tested">Controlled</span></td></tr>
+          <tr><td>Mini air pump</td><td>MOSFET module on the PWM board</td><td><span class="chip s-tested">Controlled</span></td></tr>
+          <tr><td>Solenoid valve</td><td>MOSFET module on the PWM board</td><td><span class="chip s-tested">Controlled</span></td></tr>
+          <tr><td>Stepper motor 1</td><td>STM32F407, firmware v1.1</td><td><span class="chip s-tested">Bench-verified</span></td></tr>
+          <tr><td>Stepper motor 2</td><td>STM32F407</td><td><span class="chip s-proto">In development</span></td></tr>
+          <tr><td>Linear actuator</td><td>H-bridge</td><td><span class="chip s-tbc">Next semester</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -836,43 +827,11 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <figure><img src="media/wiring-test.jpg" alt="Control board in hand, wired to the PWM module and the servo on the printed end effector" width="1400" height="1050"><figcaption><b>Bench wiring.</b> Control board, PWM module and the servo on the printed end effector.</figcaption></figure>
       <figure><video src="media/end-effector-test.mp4" poster="media/end-effector-test.jpg" width="960" height="540" muted loop playsinline autoplay preload="metadata" controls></video><figcaption><span class="vtagm">Video</span><b>End-effector test.</b> The servo-driven end effector running on the bench.</figcaption></figure>
     </div>
-    <div class="shead" style="margin-bottom:28px">
-      <h3 id="stepper-fw" style="font-size:1.6rem">Stepper 1 firmware: control that refuses to move by accident <span class="chip s-tested" style="vertical-align:middle">v1.1 flashed &amp; read back</span></h3>
-      <p class="intro">An STM32F407 board drives an ISS1-57 integrated closed-loop stepper through PUL/DIR. The PC talks to it over USB CDC with a line-based protocol, and nothing moves until an operator has confirmed the wiring, set a zero and armed the axis.</p>
-    </div>
-    <div class="grid2">
-      <div class="prose">
-        <dl class="kv">
-          <dt>Board</dt><dd>Makerbase DRG ST-7, STM32F407VET6, 8 MHz crystal</dd>
-          <dt>Pulses</dt><dd>TIM1 on PA8 (open drain), direction on PB0; TIM5 for timing; acceleration and deceleration planned per move</dd>
-          <dt>Link</dt><dd>USB CDC, ASCII commands <code>ID CMD ARGS\n</code>, newline-delimited JSON replies, protocol v1</dd>
-          <dt>Watchdog</dt><dd>Heartbeat every 200 ms; after about 1.2 s of silence the firmware stops pulsing and locks motion</dd>
-          <dt>Scale</dt><dd>400 pulses per revolution, so a 90° move is 100 pulses</dd>
-          <dt>Build</dt><dd class="mono">65,000 B flash · 28,416 B SRAM · arm-none-eabi-gcc 15.2.1</dd>
-        </dl>
-        <p class="muted" style="margin-top:18px">The PC side is a Tkinter control panel with a demo mode that simulates motion without hardware.</p>
-      </div>
-      <div>
-        <div class="tbl">
-          <table>
-            <thead><tr><th>Command</th><th>What it does</th></tr></thead>
-            <tbody>
-              <tr><td><code>PING</code></td><td>Heartbeat; returns status</td></tr>
-              <tr><td><code>CONFIG</code></td><td>Pulses per rev, speed, acceleration, deceleration, direction</td></tr>
-              <tr><td><code>ZERO</code></td><td>Declare the current position 0°; only while stopped and disarmed</td></tr>
-              <tr><td><code>ARM</code></td><td>Allow motion; needs PPR, wiring check, zero and no faults</td></tr>
-              <tr><td><code>MOVE</code> / <code>GOTO</code></td><td>Relative or absolute move in degrees</td></tr>
-              <tr><td><code>STEPS</code> / <code>JOG</code></td><td>Exact pulse count, or continuous rotation</td></tr>
-              <tr><td><code>STOP</code> / <code>HALT</code></td><td>Decelerate, or stop issuing pulses and lock</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="grid3" style="margin-top:28px">
-      <div class="card"><h3>Verified</h3><p>Firmware written with ST-LINK and read back: all 65,000 bytes match the release binary. No-load forward and reverse jog confirmed on the bench at 400 PPR.</p></div>
-      <div class="card"><h3>Tested in software</h3><p>Pulse counting, angle quantisation, stop behaviour, heartbeat timeout, timer wrap-around, command parsing and a virtual-serial run where +90° gives exactly 100 pulses.</p></div>
-      <div class="card"><h3>Still open</h3><p>Pulse waveform on a scope, angle accuracy on the real axis, and encoder feedback. Replies report <code>feedback_available: false</code> until the encoder is wired in.</p></div>
+    <h3 id="stepper-fw" style="font-size:1.6rem;margin-bottom:16px">Stepper 1 firmware <span class="chip s-tested" style="vertical-align:middle">v1.1 flashed &amp; read back</span></h3>
+    <div class="grid3">
+      <div class="card"><h3>Safe by default</h3><p>No motion until wiring is confirmed, zero is set and the axis is armed. Locks after 1.2 s without a heartbeat.</p></div>
+      <div class="card"><h3>Verified</h3><p>All 65,000 bytes read back. Forward and reverse jog confirmed at 400 pulses per revolution.</p></div>
+      <div class="card"><h3>Still open</h3><p>Scope check of the pulses, angle accuracy on the real axis, encoder feedback.</p></div>
     </div>
   </div>
 </section>
@@ -884,32 +843,32 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <div class="callno"><b>629.892 .06</b> PERCEPTION</div>
       <h2>From one desk photo to a sorted list of objects</h2>
       <span class="stamp s-tested">Tested on real desks</span>
-      <p class="intro">The robot never knows in advance what is on a desk, so detection is open-vocabulary. A missed object is invisible to the robot for good, while a wrong label can be fixed later. Recall comes first.</p>
+      <p class="intro">Open-vocabulary detection, then a vision-language model names and sorts each object.</p>
     </div>
     <div class="drone" id="drone">
       <img src="media/drone.jpg" alt="Small quadcopter inside its prop-guard frame, with its flight controller board" width="1050" height="1400">
       <div class="prose">
         <h3 style="margin-bottom:10px">The camera will be a drone <span class="chip s-proto" style="vertical-align:middle">Flying · not yet integrated</span></h3>
-        <p>A small quadcopter rides on the landing pad at the back of the robot. At each operation point it is meant to lift off, photograph the desktop from above and land again.</p>
-        <p class="muted">The drone already flies, and the recognition pipeline below already works, but they were tested separately: the desk photos on this page were not taken by the drone. Joining the two into one workflow is the next step.</p>
+        <p>Rides on the rear landing pad; at each desk it takes off, photographs the desk from above and lands.</p>
+        <p class="muted">Drone and pipeline were tested separately; the photos below are not from the drone yet.</p>
         <h3 style="margin:26px 0 12px;font-size:1.15rem">Four layers of flight safety</h3>
         <ol class="fsafe">
-          <li><b>Prop guards</b><span>A frame encloses every propeller, so a blade cannot touch a hand, a book or a screen.</span></li>
-          <li><b>Kill switch</b><span>A separate receiver on the drone pairs with a handheld controller. One press on its kill switch cuts the motors at once.</span></li>
-          <li><b>Spoken warning</b><span>A speaker on the robot announces the take-off, for example "Drone taking off, please be careful", before the motors spin up.</span></li>
-          <li><b>Strict launch rule</b><span>The drone only flies when a desk has been confirmed to need tags: free of people and not reserved.</span></li>
+          <li><b>Prop guards</b><span>Every propeller enclosed.</span></li>
+          <li><b>Kill switch</b><span>Handheld controller cuts the motors at once.</span></li>
+          <li><b>Spoken warning</b><span>Speaker announces every take-off.</span></li>
+          <li><b>Strict launch rule</b><span>Flies only for a free, unreserved desk.</span></li>
         </ol>
       </div>
     </div>
     <div class="pipe" id="pipeline">
-      <div><i>A · LOCALISE</i><b>YOLO-World</b><span>Confidence 0.05, best 10 candidates kept</span></div>
-      <div><i>B · SHARPEN</i><b>MobileSAM</b><span>Each box prompts a mask; its minimum-area rectangle gives a four-point box</span></div>
-      <div><i>C · RECOGNISE</i><b>Qwen2.5-VL-3B</b><span>Each crop returns a name, a category and a reason</span></div>
-      <div><i>D · DEDUPLICATE</i><b>Rules</b><span>Merge same-name boxes at IoU &gt; 0.5; drop children 85% inside a larger box</span></div>
-      <div><i>OUT</i><b>JSON + image</b><span>Public property goes back, personal goes to lost property, waste goes in the bin</span></div>
+      <div><i>A · LOCALISE</i><b>YOLO-World</b><span>Finds candidate boxes</span></div>
+      <div><i>B · SHARPEN</i><b>MobileSAM</b><span>Outlines each object</span></div>
+      <div><i>C · RECOGNISE</i><b>Qwen2.5-VL-3B</b><span>Names and classifies</span></div>
+      <div><i>D · DEDUPLICATE</i><b>Rules</b><span>Merges duplicates</span></div>
+      <div><i>OUT</i><b>JSON + image</b><span>Public · personal · waste</span></div>
     </div>
     <div class="shots">
-      <figure><img src="assets/det-desk-full.jpg" alt="Annotated desk: keyboards and mice labelled public, cup, cable, laptop and shoes labelled personal" width="1400" height="1050"><figcaption><b>Full working desk.</b> The final output: ten detector boxes reduced to eight objects (see the breakdown below). Green boxes are public property, blue are personal.</figcaption></figure>
+      <figure><img src="assets/det-desk-full.jpg" alt="Annotated desk: keyboards and mice labelled public, cup, cable, laptop and shoes labelled personal" width="1400" height="1050"><figcaption><b>Full working desk.</b> Final output. Green = public, blue = personal.</figcaption></figure>
       <figure><img src="assets/det-desk-simple.jpg" alt="Simple desk with four labelled objects" width="900" height="1200"><figcaption><b>Validation scene.</b> Four objects.</figcaption></figure>
       <figure><img src="assets/det-desk-cluttered.jpg" alt="Cluttered desk with seven labelled objects" width="900" height="1200"><figcaption><b>Cluttered desk.</b> Ten candidates, seven objects.</figcaption></figure>
     </div>
@@ -925,17 +884,17 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
             </tbody>
           </table>
         </div>
-        <p style="color:var(--muted);font-size:.86rem;margin-top:10px">Per image on an RTX 4060 laptop GPU (8 GB), after the models are loaded. The first image also pays about 10 s of loading.</p>
+        <p style="color:var(--muted);font-size:.86rem;margin-top:10px">Per photo, RTX 4060 laptop GPU (8 GB).</p>
       </div>
       <div class="prose">
         <h3 style="margin-bottom:10px">The fix that mattered most</h3>
-        <p>For a long time the four-point geometry was right but the language model still saw an axis-aligned crop, which pulled in the mouse next to the laptop. Feeding the perspective-corrected crop fixed the laptop, but applied everywhere it zoomed too far into small items like the bottle and the phone. The shipped rule uses four-point crops only above an area threshold.</p>
+        <p>Give the model a perspective-corrected crop for large objects, as below.</p>
       </div>
     </div>
     <div class="wide">
       <div class="ab">
-        <figure><div class="box"><img src="assets/crop-left.jpg" alt="Axis-aligned crop of the laptop that also includes the mouse" width="829" height="731"></div><figcaption><b class="v" style="color:#e88">Axis-aligned crop → "mouse"</b><br>The box also takes in the mouse beside the laptop.</figcaption></figure>
-        <figure><div class="box"><img src="assets/crop-right.jpg" alt="Perspective-corrected four-point crop of the laptop alone" width="779" height="581"></div><figcaption><b class="v" style="color:var(--teal)">Four-point crop → "laptop"</b><br>The perspective-corrected crop holds only the laptop.</figcaption></figure>
+        <figure><div class="box"><img src="assets/crop-left.jpg" alt="Axis-aligned crop of the laptop that also includes the mouse" width="829" height="731"></div><figcaption><b class="v" style="color:#e88">Axis-aligned crop → "mouse"</b></figcaption></figure>
+        <figure><div class="box"><img src="assets/crop-right.jpg" alt="Perspective-corrected four-point crop of the laptop alone" width="779" height="581"></div><figcaption><b class="v" style="color:var(--teal)">Four-point crop → "laptop"</b></figcaption></figure>
       </div>
     </div>
     <div class="wide pdemo" id="det-demo">
@@ -956,25 +915,23 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
           <span class="bin pub"><b id="bin-pub">0</b>Public</span><span class="bin per"><b id="bin-per">0</b>Personal</span><span class="bin was"><b id="bin-was">0</b>Waste</span>
         </div>
       </div>
-      <p class="pd-note">Replay of a recorded run (<code>detection_result_v1.0_1.json</code>, full working desk). Box positions, confidences, names and classes are the recorded ones; the two boxes removed as duplicates were not saved, so they are drawn at their approximate positions. Red notes mark the two labels that are still wrong.</p>
+      <p class="pd-note">Replay of a recorded run. Red notes mark the two labels still wrong.</p>
     </div>
 
     <div class="limits" id="vlm-limits">
       <h3>Limits of a local VLM on onboard compute</h3>
       <ul>
-        <li><b>Model size is capped by memory.</b> With 8 GB of GPU memory the recogniser is Qwen2.5-VL-3B, and only 4-bit quantisation brings it near 5 s per image. Larger, more accurate models do not fit.</li>
-        <li><b>It is slow for a moving robot.</b> 11–13 s per desk in bf16, about 5.5 s in 4-bit, plus about 10 s to load the model once. A patrol of many desks spends most of its time waiting on recognition.</li>
-        <li><b>Small models still misread crops.</b> In the final output for the full working desk, the empty box is labelled "mouse" and the chair at the edge "keyboard", both as public property.</li>
+        <li><b>Memory caps the model:</b> 8 GB GPU fits a 3B model, 4-bit to reach 5.5 s</li>
+        <li><b>Slow for a moving robot:</b> 11–13 s per desk at full precision</li>
       </ul>
       <ul>
-        <li><b>Context is lost in a crop.</b> A tight crop hides what is around an object, and a loose one pulls in neighbours. The axis-aligned crop above turned a laptop into a mouse.</li>
-        <li><b>What helps today:</b> keep recall high and rename later, crop with four-point boxes only for large objects, and merge duplicates by rule.</li>
-        <li><b>What we would try next:</b> a larger model off-board when the network allows, fine-tuning on library desks, and re-checking low-confidence objects from a second drone photo.</li>
+        <li><b>Still misreads:</b> empty box → "mouse", chair → "keyboard"</li>
+        <li><b>Crops lose context:</b> too tight or too loose both hurt</li>
       </ul>
     </div>
     <div class="grid2 wide">
-      <div class="card"><h3>Table calibration <span class="chip s-proto">Prototype</span></h3><p>Find the four table corners automatically (Canny edges and contour approximation) or by clicking, build a homography from the real table size, then map any pixel to tabletop X–Y coordinates and render a top-down view.</p></div>
-      <div class="card"><h3>Three-view rectification <span class="chip s-proto">Prototype</span></h3><p>Rectify three camera views of the same table and compare the object coordinates each one reports. The homography core from the calibration tool is reused here.</p></div>
+      <div class="card"><h3>Table calibration <span class="chip s-proto">Prototype</span></h3><p>Table corners → homography → tabletop X–Y.</p></div>
+      <div class="card"><h3>Three-view rectification <span class="chip s-proto">Prototype</span></h3><p>Three camera views rectified and compared.</p></div>
     </div>
   </div>
 </section>
@@ -990,11 +947,11 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     </div>
     <div class="grid2" id="workspace">
       <ol class="steps">
-        <li>Choose link lengths<span>L1 and L2 between 300 and 600 mm, the most compact pair that keeps the inner dead zone at or under 350 mm</span></li>
-        <li>Check from the current base pose<span>2R inverse kinematics within joint limits, then 3D collision checks against every obstacle</span></li>
-        <li class="branch">If unreachable or blocked, re-plan the base<span>Sample base poses, validate each one, keep the cheapest collision-free move and plan a detour</span></li>
-        <li>Build the trajectory<span>Interpolate joints; the tip follows the top of whatever is underneath with 60 mm clearance, then descends</span></li>
-        <li>Report<span>Top-down X–Y and side X–Z views, plus a step-by-step log of links, angles, waypoints and path</span></li>
+        <li>Size the arm<span>Pick the shortest links that keep the dead zone small</span></li>
+        <li>Solve the joints<span>2R inverse kinematics</span></li>
+        <li>Check collisions<span>Against every object on the desk</span></li>
+        <li class="branch">Move the base if needed<span>When the target is out of reach or blocked</span></li>
+        <li>Follow the path<span>Clear objects, then descend onto the target</span></li>
       </ol>
       <figure><div class="svgfig"><svg viewBox="0 0 600 380" role="img" aria-label="Desk 180 by 80 cm. The reachable workspace is a half-disc of radius 90 cm centred on the middle of the near edge; a half-disc of radius 30 cm around the base cannot be reached.">
           <rect x="30" y="90" width="540" height="240" fill="#1a2230" stroke="#3a4658"/>
@@ -1043,7 +1000,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <div class="callno"><b>629.892 .08</b> SAFETY</div>
       <h2>Stop for people, restart on its own</h2>
       <span class="stamp s-tested">41 logic tests pass</span>
-      <p class="intro">A ROS 2 package on the onboard computer detects people with YOLO11n, measures how far away each one is from an Orbbec Astra Pro depth image, and gates every velocity command before it reaches the base.</p>
+      <p class="intro">YOLO11n finds people, depth gives the distance, and every velocity command is gated.</p>
     </div>
     <div id="stop-zones" class="svgfig" style="margin:8px 0 0"><svg viewBox="0 0 1000 150" role="img" aria-label="Distance to the nearest person: below 0.6 m depth is unreliable; within 1.0 m the base stops; it stays stopped until the person is beyond 1.5 m; beyond that driving is allowed, up to the 8 m depth limit.">
         <defs><pattern id="hz" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0 V8" stroke="#8b96a7" stroke-opacity=".35" stroke-width="3"/></pattern></defs>
@@ -1061,25 +1018,11 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         <g fill="#8b96a7"><text x="40" y="118" text-anchor="middle">0</text><text x="220" y="118" text-anchor="middle">0.6</text><text x="340" y="118" text-anchor="middle">1.0</text><text x="490" y="118" text-anchor="middle">1.5</text><text x="640" y="118" text-anchor="middle">2.0</text><text x="790" y="118" text-anchor="middle">2.5</text><text x="940" y="118" text-anchor="middle">3.0 m</text>
         <text x="940" y="140" text-anchor="end">scale ends at 3 m · camera depth reaches 8 m</text></g>
       </svg></div>
-      <p style="color:var(--muted);font-size:.86rem;margin-top:10px">Distance is the camera's optical-axis depth to the nearest valid point in each person box. Between 1.0 m and 1.5 m the base stays stopped, so it does not chatter at the threshold.</p>
-    <div class="grid2" style="margin-top:32px">
-      <div class="prose">
-        <h3 id="fail-safe" style="margin-bottom:10px">Fails safe</h3>
-        <p>The base also stops if the camera stream drops, timestamps freeze or drift apart, depth alignment has not been confirmed, inference fails, or a person's box has under 50% valid depth or fewer than 9 valid points. If the person input goes quiet for 0.3 s, the supervisor outputs zero velocity.</p>
-        <p class="muted">When a person walks away the robot resumes by itself. Other faults need a manual reset. The 1.0 m and 1.5 m thresholds are defaults for offline validation and will be tuned to the robot's speed and braking distance.</p>
-      </div>
-      <div class="tbl">
-        <table>
-          <thead><tr><th>Topic</th><th>Role</th></tr></thead>
-          <tbody>
-            <tr><td><code>/cmd_vel_requested</code></td><td>Velocity from navigation or teleop</td></tr>
-            <tr><td><code>/cmd_vel_safe</code></td><td>Checked velocity; the only input the base driver accepts</td></tr>
-            <tr><td><code>/safety/input/person_clear</code></td><td>Person node's go / no-go</td></tr>
-            <tr><td><code>/safety/status</code></td><td>Supervisor state</td></tr>
-            <tr><td><code>/safety/reset</code></td><td>Manual reset service for non-person faults</td></tr>
-          </tbody>
-        </table>
-      </div>
+      
+    <div class="grid3" style="margin-top:28px" id="fail-safe">
+      <div class="card"><h3>Fails safe</h3><p>Also stops if the camera, timing, depth or inference fails.</p></div>
+      <div class="card"><h3>Watchdog</h3><p>Zero velocity if the person check goes quiet for 0.3 s.</p></div>
+      <div class="card"><h3>One gate</h3><p>The base only accepts <code>/cmd_vel_safe</code>.</p></div>
     </div>
   </div>
 </section>
@@ -1091,14 +1034,14 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <div class="callno"><b>629.892 .09</b> LOCALISATION &amp; NAVIGATION</div>
       <h2>Knowing where it is: 4.5&nbsp;cm error in simulation</h2>
       <span class="stamp s-proto">Simulated · Isaac Sim + ROS 2</span>
-      <p class="intro">Wheel odometry alone drifts. We correct it by matching what the depth camera sees against a prior 3D map of the room. Tested in Isaac Sim on ROS 2 Humble; the real camera comes next.</p>
+      <p class="intro">Wheel odometry drifts; matching depth clouds to a 3D map corrects it.</p>
     </div>
 
     <div class="d2c" id="depth-cloud">
-      <div class="d2c-step"><i>01</i><b>Depth image</b><span>Astra Pro camera model, 640 × 480, about 58° × 46° field of view</span></div>
-      <div class="d2c-step"><i>02</i><b>Point cloud</b><span>Isaac Sim's camera helper back-projects every pixel to XYZ</span></div>
-      <div class="d2c-step"><i>03</i><b>Range filter</b><span>Axial depth outside 0.6–8 m becomes NaN, as on the real sensor</span></div>
-      <div class="d2c-step"><i>04</i><b>Downsample</b><span>7 cm voxels before registration</span></div>
+      <div class="d2c-step"><i>01</i><b>Depth image</b><span>Astra Pro model, 640 × 480</span></div>
+      <div class="d2c-step"><i>02</i><b>Point cloud</b><span>Every pixel to XYZ</span></div>
+      <div class="d2c-step"><i>03</i><b>Range filter</b><span>Keep 0.6–8 m</span></div>
+      <div class="d2c-step"><i>04</i><b>Downsample</b><span>7 cm voxels</span></div>
     </div>
 
     <div class="loc" id="fusion">
@@ -1110,21 +1053,21 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
           <path class="ld" d="M352 344 L460 380"/><text x="466" y="378">fused estimate</text>
           <text x="20" y="40">live depth cloud on the map</text>
         </svg>
-        <figcaption><b>RViz, Isaac Sim.</b> <span style="color:#ff8d88">Red</span> is the true pose exported from the simulator. <span style="color:#7fa6ff">Blue</span> is wheel odometry alone: its error keeps accumulating. <span style="color:#5fd38a">Green</span> is our fusion of wheel odometry and depth-camera map matching, sitting on top of the truth.</figcaption>
+        <figcaption><b>RViz, Isaac Sim.</b> <span style="color:#ff8d88">Red</span> is the true pose exported from the simulator. <span style="color:#7fa6ff">Blue</span> is wheel odometry alone (drifting). <span style="color:#5fd38a">Green</span> is our fusion.</figcaption>
       </figure>
       <div>
         <h3 style="margin-bottom:12px">How the fusion works</h3>
         <ol class="steps">
-          <li>Predict<span>Wheel-encoder odometry from the differential-drive controller predicts where the robot is when each depth cloud arrives.</span></li>
-          <li>Match<span>NDT registration aligns the cloud with a prior 3D map of the room (2 cm resolution, 11.4 million points), starting from that prediction.</span></li>
-          <li>Guard<span>A match is rejected if its fitness is above 0.003 m² or it would move the pose more than 8 cm or 3° from the prediction; odometry carries on alone until the next good match.</span></li>
-          <li>Start up<span>At launch, a global BBS search proposes candidate poses on the map and NDT confirms one before tracking begins.</span></li>
+          <li>Predict<span>Wheel odometry gives a first guess</span></li>
+          <li>Match<span>NDT aligns the depth cloud to the map</span></li>
+          <li>Guard<span>Bad matches are rejected</span></li>
+          <li>Start up<span>Global search finds the first pose</span></li>
         </ol>
-        <p style="color:var(--muted);font-size:.86rem;margin-top:6px">Built on open-source lidar_localization_ros2, ndt_omp and diff_drive_controller. Our work is the scene and sensor setup, filtering, guards, launch files and the evaluation.</p>
+        <p style="color:var(--muted);font-size:.86rem;margin-top:6px">Built on open-source lidar_localization_ros2 and ndt_omp.</p>
       </div>
     </div>
 
-    <div class="subhead" id="loc-results"><h3>Same recording, four estimates</h3><p>665 depth clouds, 143 s of simulation, 0.68 m of travel and 22° of turning, replayed through each configuration from the same starting pose. Ground truth is used only to score.</p></div>
+    <div class="subhead" id="loc-results"><h3>Same recording, four estimates</h3><p>Same 143 s recording, same start.</p></div>
     <div class="grid2">
       <div class="rmse" role="img" aria-label="XY RMSE: wheel only 22.9 cm, GICP 33.2 cm, GICP with guards 7.3 cm, NDT with guards 4.5 cm">
         <div class="rb"><span>Wheel odometry only</span><div><i style="width:68.9%;background:#7fa6ff"></i></div><b>22.9 cm</b></div>
@@ -1144,31 +1087,11 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         </table>
       </div>
     </div>
-    <figure class="wide"><img src="media/cloud-alignment.png" alt="Top view: before, the depth cloud lies skewed off the map; after, it sits on the table and chair outlines" width="1760" height="720"><figcaption><b>Stationary check.</b> Depth cloud over the map before (GICP) and after (guarded NDT). The robot's position error fell from about 1.81 m to 4.6 cm.</figcaption></figure>
-
-    <div class="limits" style="border-left-color:var(--amber)">
-      <h3>What this does not prove yet</h3>
-      <ul>
-        <li><b>One short route.</b> 0.68 m and 22° of turning; long routes and full relocalisation after a loss are not tested.</li>
-        <li><b>Simulation only.</b> The camera model follows the Astra Pro datasheet; the real camera is next.</li>
-      </ul>
-      <ul>
-        <li><b>No IMU, no dynamic filtering.</b> Moved chairs and passing people are not filtered out of the depth cloud.</li>
-        <li><b>Fitness is not error.</b> A low score can still come from a wrong match on repeated furniture or large flat walls.</li>
-      </ul>
-    </div>
+    <figure class="wide"><img src="media/cloud-alignment.png" alt="Top view: before, the depth cloud lies skewed off the map; after, it sits on the table and chair outlines" width="1760" height="720"><figcaption><b>Stationary check.</b> Before vs after: 1.81 m → 4.6 cm error.</figcaption></figure>
 
     <div class="grid2" style="margin-top:28px">
-      <div class="tbc"><h3>Still to build: chassis</h3><ul>
-        <li><b>Occupancy</b> by detecting human legs at observation points</li>
-        <li><b>Route</b> chosen from observations, driven with Nav2 through the safety gate</li>
-        <li><b>Real hardware</b>: the same localiser on the physical camera and wheels</li>
-      </ul></div>
-      <div class="tbc"><h3>Still to build: state machine</h3><ul>
-        <li><b>States</b> and transitions between patrol, observe, travel, inspect and act</li>
-        <li><b>Hand-over</b> to the upper stack at each operation point, and back when it is done</li>
-        <li><b>Recovery</b> after a safety stop or a failed grasp</li>
-      </ul></div>
+      <div class="tbc"><h3>Not proven yet</h3><ul><li>One short route, simulation only</li><li>No IMU, no filtering of moving people</li></ul></div>
+      <div class="tbc"><h3>Still to build</h3><ul><li>Occupancy check, Nav2 route, state machine</li><li>Same localiser on the real robot</li></ul></div>
     </div>
   </div>
 </section>
@@ -1180,7 +1103,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <div class="callno"><b>629.892 .10</b> BILL OF MATERIALS</div>
       <h2>What we ordered</h2>
       <span class="stamp s-proto">Order sheet A06 · HK$</span>
-      <p class="intro">Every purchased part on the group's order sheet, with quantities and prices in Hong Kong dollars. Printed parts and the drone are not on this sheet.</p>
+      <p class="intro">Purchased parts by category, in Hong Kong dollars.</p>
     </div>
     <dl class="bomtop">
       <div><dt>Line items</dt><dd>36</dd></div>
@@ -1189,6 +1112,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     </dl>
     <div id="budget-cats" class="catbar" role="img" aria-label="Spend by category"><span style="width:33.05%;background:#e39b4b" title="Actuation: HK$401.23"></span><span style="width:33.02%;background:#5a7896" title="Structure: HK$400.92"></span><span style="width:17.95%;background:#56a9a3" title="Electronics & power: HK$217.89"></span><span style="width:10.03%;background:#8b96a7" title="Shafts & bearings: HK$121.73"></span><span style="width:5.96%;background:#c9b98f" title="Transmission: HK$72.34"></span></div>
     <div class="catkey"><span><i style="background:#e39b4b"></i>Actuation <b>HK$401.23</b> · 5 lines</span><span><i style="background:#5a7896"></i>Structure <b>HK$400.92</b> · 7 lines</span><span><i style="background:#56a9a3"></i>Electronics & power <b>HK$217.89</b> · 7 lines</span><span><i style="background:#8b96a7"></i>Shafts & bearings <b>HK$121.73</b> · 12 lines</span><span><i style="background:#c9b98f"></i>Transmission <b>HK$72.34</b> · 5 lines</span></div>
+    <details class="bomd"><summary>Show all 36 order lines</summary>
     <div class="tbl bom" id="bom">
       <table>
         <thead><tr><th>No.</th><th>Item</th><th style="text-align:right">Qty</th><th style="text-align:right">Unit (HK$)</th><th style="text-align:right">Total (HK$)</th><th>Purpose</th></tr></thead>
@@ -1196,7 +1120,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         <tfoot><tr><td></td><td>Total</td><td></td><td></td><td class="num">1,214.11</td><td></td></tr></tfoot>
       </table>
     </div>
-    <p style="color:var(--muted);font-size:.84rem;margin-top:10px">The A26 + A31 line replaces two quoted lines (HK$364.20) with one supplier's price of ¥100, converted at 1 CNY = HK$1.177 (Wise mid-market rate, November 2026).</p>
+    
+    </details>
   </div>
 </section>
 
@@ -1213,12 +1138,12 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <div class="aiphase">
         <span class="chip s-proto">Design phase</span>
         <h3>A constant sparring partner</h3>
-        <p>We kept exchanging ideas with AI while designing the system, and used it to keep refining the details of our design.</p>
+        <p>We discussed ideas with AI and used it to refine details.</p>
       </div>
       <div class="aiphase">
         <span class="chip s-proto">Coding phase</span>
-        <h3>Most of the code was written by AI</h3>
-        <p>To be frank, the large majority of the coding in this project was done by AI, across every software part of the robot and this page.</p>
+        <h3>AI wrote most of the code</h3>
+        <p>AI wrote most of the code; the approach is ours.</p>
       </div>
     </div>
     <div class="tbl" style="margin-top:20px">
@@ -1258,7 +1183,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 </section>
 </main>
 
-<footer><div class="wrap"><span>IC382 · Group A06 · Library service robot</span><span>Team members and roles to be added</span></div></footer>
+<footer><div class="wrap"><span>IC382 · Group A06 · Library service robot</span><span>Full details in the design report (PDF) · Team members and roles to be added</span></div></footer>
 
 <script>
 (()=>{
