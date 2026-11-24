@@ -331,6 +331,28 @@ figcaption b{color:var(--paper);font-weight:500}
 .pips i.on{background:var(--amber)}
 .aitbl td:last-child{white-space:nowrap;font-size:.86rem;color:var(--muted)}
 @media (max-width:680px){.aiu{grid-template-columns:minmax(0,1fr)}}
+/* project map */
+.pmap{border-bottom:1px solid var(--line);background:radial-gradient(ellipse 50% 60% at 50% 50%,#152031,transparent 75%),var(--ink);padding:44px 0 40px}
+.pmap-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+.pmap-head p{color:var(--muted);font-size:.9rem}
+.pmap-box{overflow-x:auto}
+#pmap{display:block;width:100%;min-width:980px;height:auto}
+#pmap .edge{fill:none;stroke:#3a4a60;stroke-width:1.4;transition:stroke .2s,stroke-width .2s}
+#pmap .edge.hot{stroke:var(--amber);stroke-width:2}
+#pmap a{cursor:pointer;outline:none}
+#pmap .root rect{fill:var(--amber)}
+#pmap .root text{fill:var(--ink);font:700 19px var(--font-display);letter-spacing:.04em}
+#pmap .l1 rect{fill:#162131;stroke:#e39b4b99;stroke-width:1.2;transition:fill .2s,stroke .2s}
+#pmap .l1 text{fill:var(--paper);font:600 14.5px var(--font-body)}
+#pmap .l1 .num{fill:var(--amber);font:500 10.5px var(--font-mono)}
+#pmap .lf rect{fill:transparent;stroke:transparent;transition:fill .2s,stroke .2s}
+#pmap .lf text{fill:var(--muted);font:400 12.5px var(--font-body);transition:fill .2s}
+#pmap .lf circle{fill:#3a4a60;transition:fill .2s}
+#pmap .l1:hover rect,#pmap .l1:focus-visible rect,#pmap .l1.hot rect{fill:#e39b4b22;stroke:var(--amber)}
+#pmap .lf:hover text,#pmap .lf:focus-visible text,#pmap .lf.hot text{fill:var(--paper)}
+#pmap .lf:hover rect,#pmap .lf:focus-visible rect{fill:#ffffff08;stroke:#e39b4b66}
+#pmap .lf:hover circle,#pmap .lf.hot circle{fill:var(--amber)}
+#pmap .side{fill:var(--muted);font:500 10.5px var(--font-mono);letter-spacing:.12em}
 /* polish */
 .kpis{border-bottom:1px solid var(--line);background:linear-gradient(180deg,#0f1620,var(--ink))}
 .kpis .wrap{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
@@ -410,7 +432,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   <div class="wrap">
     <a class="brand" href="#top">A06<span>/</span>LIBRARY ROBOT</a>
     <nav aria-label="Sections">
-      <a href="#mission">Mission</a><a href="#architecture">Software</a><a href="#mechanical">Mechanical</a>
+      <a href="#project-map">Map</a><a href="#mission">Mission</a><a href="#architecture">Software</a><a href="#mechanical">Mechanical</a>
       <a href="#electrical">Electrical</a><a href="#firmware">Control</a><a href="#perception">Perception</a>
       <a href="#planning">Arm</a><a href="#safety">Safety</a><a href="#navigation">Localisation</a><a href="#budget">Budget</a><a href="#ai-use">AI</a><a href="#repos">Code</a>
     </nav>
@@ -443,6 +465,12 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   </div>
 </div>
 
+<div class="pmap" id="project-map">
+  <div class="wrap">
+    <div class="pmap-head"><div class="callno"><b>629.892 .00</b> PROJECT MAP</div><p>Every part of the project on one page. Click any node to jump straight to it.</p></div>
+    <div class="pmap-box"><svg id="pmap" role="navigation" aria-label="Project map"></svg></div>
+  </div>
+</div>
 <div class="kpis">
   <div class="wrap">
     <a href="#navigation"><b>4.5<small>cm</small></b><span>localisation error in simulation (XY RMSE)</span></a>
@@ -470,7 +498,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <div class="st up"><span class="n">06</span><h3>Classify</h3><p>Find every object, outline it with a four-point box and label it public, personal or waste.</p><span class="who">Upper</span><span class="chip s-tested">Tested</span></div>
       <div class="st up"><span class="n">07</span><h3>Act</h3><p>Plan a collision-free arm path to each object and place the matching tag.</p><span class="who">Upper</span><span class="chip s-proto">Simulated</span></div>
     </div>
-    <div class="guard"><b>Always on: person safety layer.</b> Every velocity command passes through a ROS 2 node that stops the base when a person comes within 1.0 m. <span class="chip s-tested">41 logic tests pass</span></div>
+    <div class="guard" id="loop-guard"><b>Always on: person safety layer.</b> Every velocity command passes through a ROS 2 node that stops the base when a person comes within 1.0 m. <span class="chip s-tested">41 logic tests pass</span></div>
   </div>
 </section>
 
@@ -484,8 +512,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <p class="intro">The chassis stack decides where the robot goes; the upper stack decides what it does at each desk. The state machine in the middle runs the loop and hands control between them. Pick a state to see which modules it uses and what it passes on.</p>
     </div>
     <div class="sw">
-      <div class="lane"><div class="lh"><b>Chassis stack</b><span>where to go</span></div><div class="nodes"><div class="nd" data-m="map"><b>Pre-built map</b><span>3D scan with waypoints, operation points and observation points</span><span class="chip s-tbc">TBC</span></div><div class="nd" data-m="loc"><b>Localisation</b><span>NDT map matching on depth clouds, wheel-odometry prediction; 4.5 cm in sim</span><span class="chip s-proto">Prototype</span></div><div class="nd" data-m="occ"><b>Occupancy</b><span>Human legs beside desk legs mark a desk occupied</span><span class="chip s-tbc">TBC</span></div><div class="nd" data-m="route"><b>Route choice</b><span>Next free desk from what was observed</span><span class="chip s-tbc">TBC</span></div><div class="nd" data-m="nav"><b>Nav2</b><span>Drives between chosen points</span><span class="chip s-tbc">TBC</span></div><div class="nd" data-m="safe"><b>Safety gate</b><span>YOLO11n + RGB-D depth; stops within 1.0 m</span><span class="chip s-tested">Built</span></div><div class="nd" data-m="base"><b>Base driver</b><span>Accepts only /cmd_vel_safe</span><span class="chip s-tbc">TBC</span></div></div></div>
-      <div class="smrow">
+      <div class="lane" id="chassis-stack"><div class="lh"><b>Chassis stack</b><span>where to go</span></div><div class="nodes"><div class="nd" data-m="map"><b>Pre-built map</b><span>3D scan with waypoints, operation points and observation points</span><span class="chip s-tbc">TBC</span></div><div class="nd" data-m="loc"><b>Localisation</b><span>NDT map matching on depth clouds, wheel-odometry prediction; 4.5 cm in sim</span><span class="chip s-proto">Prototype</span></div><div class="nd" data-m="occ"><b>Occupancy</b><span>Human legs beside desk legs mark a desk occupied</span><span class="chip s-tbc">TBC</span></div><div class="nd" data-m="route"><b>Route choice</b><span>Next free desk from what was observed</span><span class="chip s-tbc">TBC</span></div><div class="nd" data-m="nav"><b>Nav2</b><span>Drives between chosen points</span><span class="chip s-tbc">TBC</span></div><div class="nd" data-m="safe"><b>Safety gate</b><span>YOLO11n + RGB-D depth; stops within 1.0 m</span><span class="chip s-tested">Built</span></div><div class="nd" data-m="base"><b>Base driver</b><span>Accepts only /cmd_vel_safe</span><span class="chip s-tbc">TBC</span></div></div></div>
+      <div class="smrow" id="state-machine">
         <div class="lh"><b style="color:var(--amber)">State machine</b><span>draft states · transitions TBC</span></div>
         <div class="smbox">
           <div class="track" role="group" aria-label="States"><button class="sp" data-s="patrol" aria-pressed="false"><i>01</i>Patrol</button><button class="sp" data-s="observe" aria-pressed="false"><i>02</i>Observe</button><button class="sp" data-s="travel" aria-pressed="false"><i>03</i>Travel</button><button class="sp" data-s="sign" aria-pressed="false"><i>04</i>Check sign</button><button class="sp" data-s="capture" aria-pressed="false"><i>05</i>Capture</button><button class="sp" data-s="classify" aria-pressed="false"><i>06</i>Classify</button><button class="sp" data-s="act" aria-pressed="false"><i>07</i>Act</button><span class="loopback" aria-hidden="true">↺ next desk</span></div>
@@ -493,7 +521,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
           <div class="stopline"><span class="stoppill">Safety stop</span> Any state → zero velocity when a person comes within 1.0 m; patrol resumes once they pass 1.5 m.</div>
         </div>
       </div>
-      <div class="lane"><div class="lh"><b>Upper stack</b><span>what to do</span></div><div class="nodes"><div class="nd" data-m="sign"><b>Sign check</b><span>Looks for a &quot;reserved&quot; sign</span><span class="chip s-tbc">TBC</span></div><div class="nd" data-m="drone"><b>Drone capture</b><span>Flies; photo hand-off to perception not wired up yet</span><span class="chip s-proto">Prototype</span></div><div class="nd" data-m="yolo"><b>YOLO-World</b><span>Open-vocabulary boxes, recall first</span><span class="chip s-tested">Built</span></div><div class="nd" data-m="sam"><b>MobileSAM</b><span>Masks become four-point boxes</span><span class="chip s-tested">Built</span></div><div class="nd" data-m="vlm"><b>Qwen2.5-VL-3B</b><span>Name, class and reason per object</span><span class="chip s-tested">Built</span></div><div class="nd" data-m="cal"><b>Table calibration</b><span>Pixel to tabletop X–Y by homography</span><span class="chip s-proto">Prototype</span></div><div class="nd" data-m="plan"><b>Arm planner</b><span>IK, collision checks, base re-planning</span><span class="chip s-proto">Prototype</span></div><div class="nd" data-m="mcu"><b>STM32 + PWM board</b><span>Steppers by pulses, servo, pump and valve by PWM</span><span class="chip s-proto">Prototype</span></div><div class="nd" data-m="act"><b>Actuators</b><span>Lift, two yaw joints, extension, rack, suction</span><span class="chip s-proto">Prototype</span></div></div></div>
+      <div class="lane" id="upper-stack"><div class="lh"><b>Upper stack</b><span>what to do</span></div><div class="nodes"><div class="nd" data-m="sign"><b>Sign check</b><span>Looks for a &quot;reserved&quot; sign</span><span class="chip s-tbc">TBC</span></div><div class="nd" data-m="drone"><b>Drone capture</b><span>Flies; photo hand-off to perception not wired up yet</span><span class="chip s-proto">Prototype</span></div><div class="nd" data-m="yolo"><b>YOLO-World</b><span>Open-vocabulary boxes, recall first</span><span class="chip s-tested">Built</span></div><div class="nd" data-m="sam"><b>MobileSAM</b><span>Masks become four-point boxes</span><span class="chip s-tested">Built</span></div><div class="nd" data-m="vlm"><b>Qwen2.5-VL-3B</b><span>Name, class and reason per object</span><span class="chip s-tested">Built</span></div><div class="nd" data-m="cal"><b>Table calibration</b><span>Pixel to tabletop X–Y by homography</span><span class="chip s-proto">Prototype</span></div><div class="nd" data-m="plan"><b>Arm planner</b><span>IK, collision checks, base re-planning</span><span class="chip s-proto">Prototype</span></div><div class="nd" data-m="mcu"><b>STM32 + PWM board</b><span>Steppers by pulses, servo, pump and valve by PWM</span><span class="chip s-proto">Prototype</span></div><div class="nd" data-m="act"><b>Actuators</b><span>Lift, two yaw joints, extension, rack, suction</span><span class="chip s-proto">Prototype</span></div></div></div>
     </div>
     <div class="swkey"><span><span class="chip s-tested">Built</span> code in the repositories and tested</span><span><span class="chip s-proto">Prototype</span> working in simulation or on the bench</span><span><span class="chip s-tbc">TBC</span> not started</span></div>
   </div>
@@ -508,7 +536,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <span class="stamp s-proto">CAD complete · chassis model to follow</span>
       <p class="intro">The upper assembly sits on a differential-drive base. A lift raises the arm, two yaw joints swing it over the desk, an aluminium tube telescopes outward, and a rack at the tip lowers the suction cup onto the object.</p>
     </div>
-    <div class="grid2">
+    <div class="grid2" id="joints">
       <div>
         <figure class="figo" style="margin-bottom:12px">
           <img src="assets/top-view.png" alt="Top view of the upper assembly at zero pose: drone landing pad at the rear, three tag slots on the left, arm folded over the landing pad" width="1240" height="1160">
@@ -550,7 +578,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       </div>
     </div>
     </div>
-    <div class="subhead"><h3>Shoulder joint in section</h3><p>The steel arm turns on a vertical shaft. A thrust bearing takes the arm's weight, a deep-groove bearing keeps the shaft true, and a timing pulley at the bottom brings in the drive.</p></div>
+    <div class="subhead" id="shoulder"><h3>Shoulder joint in section</h3><p>The steel arm turns on a vertical shaft. A thrust bearing takes the arm's weight, a deep-groove bearing keeps the shaft true, and a timing pulley at the bottom brings in the drive.</p></div>
     <div class="section-fig">
       <figure class="figo">
         <img src="media/shoulder-section.png" alt="CAD cross-section of the shoulder joint, numbered parts listed beside it" width="866" height="973">
@@ -579,7 +607,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       </ol>
     </div>
 
-    <div class="subhead"><h3>From CAD to hardware</h3><p>The lift, the arm and the end effector are built and moving by hand and on the bench.</p></div>
+    <div class="subhead" id="hardware"><h3>From CAD to hardware</h3><p>The lift, the arm and the end effector are built and moving by hand and on the bench.</p></div>
     <div class="gal g-land">
       <figure><img src="media/assembly.jpg" alt="Assembled lift columns, sheet-metal plates and steel arm on the shoulder joint" width="1280" height="960"><figcaption><b>Assembled.</b> Lift columns, sheet-metal platform and the steel arm on its shoulder joint.</figcaption></figure>
       <figure><video src="media/shoulder-test.mp4" poster="media/shoulder-test.jpg" width="960" height="540" muted loop playsinline autoplay preload="metadata" controls></video><figcaption><span class="vtagm">Video</span><b>Shoulder test.</b> The arm swinging on its shoulder joint.</figcaption></figure>
@@ -607,7 +635,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <button class="btn" data-f="ct" aria-pressed="false">Control / data</button>
       <button class="btn" data-f="fb" aria-pressed="false">Angle feedback</button>
     </div>
-    <div class="ediag">
+    <div class="ediag" id="elec-diagram">
       <svg id="esvg" viewBox="0 0 1010 640" role="img" aria-label="Electrical system architecture">
         <defs>
           <marker id="ma" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" fill="#e39b4b"/></marker>
@@ -717,7 +745,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         </g>
       </svg>
     </div>
-    <div class="changes">
+    <div class="changes" id="elec-revisions">
       <div><span class="chip s-proto">Revised</span><span>The ToF sensor module and its 12–24 V branch are removed from the architecture.</span></div>
       <div><span class="chip s-proto">Revised</span><span>The servo is now a feedback servo; its position signal returns to the STM32 alongside the two AS5600 channels.</span></div>
       <div><span class="chip s-proto">Revised</span><span>The pump and valve MOSFET modules come from a kit with servo-style PWM inputs; they share a multi-channel PWM board with the servo.</span></div>
@@ -736,7 +764,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <span class="stamp s-proto">4 of 6 running</span>
       <p class="intro">The servo, the air pump and the solenoid valve all take standard servo-style PWM, so they share one multi-channel PWM board with a separate control pin per channel. The steppers get their own pulse firmware on the STM32F407.</p>
     </div>
-    <div class="tbl act" style="margin-bottom:44px">
+    <div id="actuators" class="tbl act" style="margin-bottom:44px">
       <table>
         <thead><tr><th>Actuator</th><th>Driven through</th><th>Control signal</th><th>Status</th></tr></thead>
         <tbody>
@@ -754,7 +782,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <figure><video src="media/end-effector-test.mp4" poster="media/end-effector-test.jpg" width="960" height="540" muted loop playsinline autoplay preload="metadata" controls></video><figcaption><span class="vtagm">Video</span><b>End-effector test.</b> The servo-driven end effector running on the bench.</figcaption></figure>
     </div>
     <div class="shead" style="margin-bottom:28px">
-      <h3 style="font-size:1.6rem">Stepper 1 firmware: control that refuses to move by accident <span class="chip s-tested" style="vertical-align:middle">v1.1 flashed &amp; read back</span></h3>
+      <h3 id="stepper-fw" style="font-size:1.6rem">Stepper 1 firmware: control that refuses to move by accident <span class="chip s-tested" style="vertical-align:middle">v1.1 flashed &amp; read back</span></h3>
       <p class="intro">An STM32F407 board drives an ISS1-57 integrated closed-loop stepper through PUL/DIR. The PC talks to it over USB CDC with a line-based protocol, and nothing moves until an operator has confirmed the wiring, set a zero and armed the axis.</p>
     </div>
     <div class="grid2">
@@ -803,7 +831,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <span class="stamp s-tested">Tested on real desks</span>
       <p class="intro">The robot never knows in advance what is on a desk, so detection is open-vocabulary. A missed object is invisible to the robot for good, while a wrong label can be fixed later. Recall comes first.</p>
     </div>
-    <div class="drone">
+    <div class="drone" id="drone">
       <img src="media/drone.jpg" alt="Small quadcopter inside its prop-guard frame, with its flight controller board" width="1050" height="1400">
       <div class="prose">
         <h3 style="margin-bottom:10px">The camera will be a drone <span class="chip s-proto" style="vertical-align:middle">Flying · not yet integrated</span></h3>
@@ -818,7 +846,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         </ol>
       </div>
     </div>
-    <div class="pipe">
+    <div class="pipe" id="pipeline">
       <div><i>A · LOCALISE</i><b>YOLO-World</b><span>Confidence 0.05, best 10 candidates kept</span></div>
       <div><i>B · SHARPEN</i><b>MobileSAM</b><span>Each box prompts a mask; its minimum-area rectangle gives a four-point box</span></div>
       <div><i>C · RECOGNISE</i><b>Qwen2.5-VL-3B</b><span>Each crop returns a name, a category and a reason</span></div>
@@ -861,7 +889,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <p style="color:var(--muted);font-size:.84rem;margin-top:10px"><b style="color:var(--paper);font-weight:500">The most useful diagnostic.</b> All ten YOLO-World candidates for the full working desk, with detector confidence, marked against what is really in each crop. The four strongest boxes are all right; of the six below 0.5, only the chair is named correctly. That is why the pipeline keeps weak boxes for recall and lets the language model rename them.</p>
     </div>
 
-    <div class="limits">
+    <div class="limits" id="vlm-limits">
       <h3>Limits of a local VLM on onboard compute</h3>
       <ul>
         <li><b>Model size is capped by memory.</b> With 8 GB of GPU memory the recogniser is Qwen2.5-VL-3B, and only 4-bit quantisation brings it near 5 s per image. Larger, more accurate models do not fit.</li>
@@ -890,7 +918,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <span class="stamp s-proto">Simulated</span>
       <p class="intro">A simulator places random laptops, cups and books on an 1800 × 800 mm desk. Given a target point, it sizes the arm, solves the joints, checks for collisions and, if needed, moves the base first.</p>
     </div>
-    <div class="grid2">
+    <div class="grid2" id="workspace">
       <ol class="steps">
         <li>Choose link lengths<span>L1 and L2 between 300 and 600 mm, the most compact pair that keeps the inner dead zone at or under 350 mm</span></li>
         <li>Check from the current base pose<span>2R inverse kinematics within joint limits, then 3D collision checks against every obstacle</span></li>
@@ -913,7 +941,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
           <text x="40" y="112" fill="#56a9a3">reachable</text><text x="252" y="320" text-anchor="middle" fill="#ff9b97">dead zone</text>
         </svg></div><figcaption><b>Reachable workspace.</b> Redrawn from the planner's figure: teal is reachable, red is the inner dead zone the link optimiser keeps small.</figcaption></figure>
     </div>
-    <h3 style="margin:40px 0 14px">Four iterations in two days</h3>
+    <h3 id="iterations" style="margin:40px 0 14px">Four iterations in two days</h3>
     <div class="iters">
       <div><b>arm2.0</b><span>9 Nov</span><p>Fixed base, three planning joints, text-only workspace and inverse-kinematics check.</p></div>
       <div><b>arm3.0</b><span>10 Nov</span><p>2R arm on a mobile base: random desk objects, collision checks, base re-planning, top-down view.</p></div>
@@ -932,7 +960,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <span class="stamp s-tested">41 logic tests pass</span>
       <p class="intro">A ROS 2 package on the onboard computer detects people with YOLO11n, measures how far away each one is from an Orbbec Astra Pro depth image, and gates every velocity command before it reaches the base.</p>
     </div>
-    <div class="svgfig" style="margin:8px 0 0"><svg viewBox="0 0 1000 150" role="img" aria-label="Distance to the nearest person: below 0.6 m depth is unreliable; within 1.0 m the base stops; it stays stopped until the person is beyond 1.5 m; beyond that driving is allowed, up to the 8 m depth limit.">
+    <div id="stop-zones" class="svgfig" style="margin:8px 0 0"><svg viewBox="0 0 1000 150" role="img" aria-label="Distance to the nearest person: below 0.6 m depth is unreliable; within 1.0 m the base stops; it stays stopped until the person is beyond 1.5 m; beyond that driving is allowed, up to the 8 m depth limit.">
         <defs><pattern id="hz" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0 V8" stroke="#8b96a7" stroke-opacity=".35" stroke-width="3"/></pattern></defs>
         <rect x="40" y="46" width="180" height="46" fill="url(#hz)"/>
         <rect x="220" y="46" width="120" height="46" fill="#d9534f" fill-opacity=".35"/>
@@ -951,7 +979,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <p style="color:var(--muted);font-size:.86rem;margin-top:10px">Distance is the camera's optical-axis depth to the nearest valid point in each person box. Between 1.0 m and 1.5 m the base stays stopped, so it does not chatter at the threshold.</p>
     <div class="grid2" style="margin-top:32px">
       <div class="prose">
-        <h3 style="margin-bottom:10px">Fails safe</h3>
+        <h3 id="fail-safe" style="margin-bottom:10px">Fails safe</h3>
         <p>The base also stops if the camera stream drops, timestamps freeze or drift apart, depth alignment has not been confirmed, inference fails, or a person's box has under 50% valid depth or fewer than 9 valid points. If the person input goes quiet for 0.3 s, the supervisor outputs zero velocity.</p>
         <p class="muted">When a person walks away the robot resumes by itself. Other faults need a manual reset. The 1.0 m and 1.5 m thresholds are defaults for offline validation and will be tuned to the robot's speed and braking distance.</p>
       </div>
@@ -981,14 +1009,14 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <p class="intro">Wheel odometry alone drifts. We correct it by matching what the depth camera sees against a prior 3D map of the room. Tested in Isaac Sim on ROS 2 Humble; the real camera comes next.</p>
     </div>
 
-    <div class="d2c">
+    <div class="d2c" id="depth-cloud">
       <div class="d2c-step"><i>01</i><b>Depth image</b><span>Astra Pro camera model, 640 × 480, about 58° × 46° field of view</span></div>
       <div class="d2c-step"><i>02</i><b>Point cloud</b><span>Isaac Sim's camera helper back-projects every pixel to XYZ</span></div>
       <div class="d2c-step"><i>03</i><b>Range filter</b><span>Axial depth outside 0.6–8 m becomes NaN, as on the real sensor</span></div>
       <div class="d2c-step"><i>04</i><b>Downsample</b><span>7 cm voxels before registration</span></div>
     </div>
 
-    <div class="loc">
+    <div class="loc" id="fusion">
       <figure class="figo">
         <img src="media/rviz-localization.png" alt="RViz: live depth cloud over the map; the red ground-truth pose sits inside the green fused pose, while the blue wheel-only pose has drifted to the left" width="675" height="564">
         <svg viewBox="0 0 675 564" aria-hidden="true">
@@ -1011,7 +1039,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       </div>
     </div>
 
-    <div class="subhead"><h3>Same recording, four estimates</h3><p>665 depth clouds, 143 s of simulation, 0.68 m of travel and 22° of turning, replayed through each configuration from the same starting pose. Ground truth is used only to score.</p></div>
+    <div class="subhead" id="loc-results"><h3>Same recording, four estimates</h3><p>665 depth clouds, 143 s of simulation, 0.68 m of travel and 22° of turning, replayed through each configuration from the same starting pose. Ground truth is used only to score.</p></div>
     <div class="grid2">
       <div class="rmse" role="img" aria-label="XY RMSE: wheel only 22.9 cm, GICP 33.2 cm, GICP with guards 7.3 cm, NDT with guards 4.5 cm">
         <div class="rb"><span>Wheel odometry only</span><div><i style="width:68.9%;background:#7fa6ff"></i></div><b>22.9 cm</b></div>
@@ -1074,9 +1102,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <div><dt>Order total</dt><dd>HK$1,214.11</dd></div>
       <div><dt>Saved on structure</dt><dd>HK$246.50 <small style="display:block;font:400 .8rem var(--font-body);color:var(--muted)">steel arms and connectors from one supplier for ¥100</small></dd></div>
     </dl>
-    <div class="catbar" role="img" aria-label="Spend by category"><span style="width:33.05%;background:#e39b4b" title="Actuation: HK$401.23"></span><span style="width:33.02%;background:#5a7896" title="Structure: HK$400.92"></span><span style="width:17.95%;background:#56a9a3" title="Electronics & power: HK$217.89"></span><span style="width:10.03%;background:#8b96a7" title="Shafts & bearings: HK$121.73"></span><span style="width:5.96%;background:#c9b98f" title="Transmission: HK$72.34"></span></div>
+    <div id="budget-cats" class="catbar" role="img" aria-label="Spend by category"><span style="width:33.05%;background:#e39b4b" title="Actuation: HK$401.23"></span><span style="width:33.02%;background:#5a7896" title="Structure: HK$400.92"></span><span style="width:17.95%;background:#56a9a3" title="Electronics & power: HK$217.89"></span><span style="width:10.03%;background:#8b96a7" title="Shafts & bearings: HK$121.73"></span><span style="width:5.96%;background:#c9b98f" title="Transmission: HK$72.34"></span></div>
     <div class="catkey"><span><i style="background:#e39b4b"></i>Actuation <b>HK$401.23</b> · 5 lines</span><span><i style="background:#5a7896"></i>Structure <b>HK$400.92</b> · 7 lines</span><span><i style="background:#56a9a3"></i>Electronics & power <b>HK$217.89</b> · 7 lines</span><span><i style="background:#8b96a7"></i>Shafts & bearings <b>HK$121.73</b> · 12 lines</span><span><i style="background:#c9b98f"></i>Transmission <b>HK$72.34</b> · 5 lines</span></div>
-    <div class="tbl bom">
+    <div class="tbl bom" id="bom">
       <table>
         <thead><tr><th>No.</th><th>Item</th><th style="text-align:right">Qty</th><th style="text-align:right">Unit (HK$)</th><th style="text-align:right">Total (HK$)</th><th>Purpose</th></tr></thead>
         <tbody><tr><td class="num" style="text-align:left">A1</td><td>FEETECH FT90M 280° Metal-Gear Servo (Black, 2 kg)</td><td class="num">1</td><td class="num">44.70</td><td class="num">44.70</td><td>Suction cup movement</td></tr><tr><td class="num" style="text-align:left">A2</td><td>H5M High-Torque Timing Pulley (15 mm Bore)</td><td class="num">1</td><td class="num">13.94</td><td class="num">13.94</td><td>Power transmission</td></tr><tr><td class="num" style="text-align:left">A3</td><td>H5M High-Torque Timing Pulley (12 mm Bore)</td><td class="num">1</td><td class="num">13.94</td><td class="num">13.94</td><td>Power transmission</td></tr><tr><td class="num" style="text-align:left">A4</td><td>STM32F407VET6 Minimum System Board</td><td class="num">1</td><td class="num">46.10</td><td class="num">46.10</td><td>System control</td></tr><tr><td class="num" style="text-align:left">A5</td><td>H5M High-Torque Timing Pulley (8 mm Bore)</td><td class="num">2</td><td class="num">11.06</td><td class="num">22.12</td><td>Power transmission</td></tr><tr><td class="num" style="text-align:left">A6</td><td>Shaft Collar (15 mm Bore)</td><td class="num">1</td><td class="num">3.54</td><td class="num">3.54</td><td>Axial shaft retention</td></tr><tr><td class="num" style="text-align:left">A7</td><td>Shaft Collar (12 mm Bore)</td><td class="num">2</td><td class="num">3.62</td><td class="num">7.24</td><td>Axial shaft retention</td></tr><tr><td class="num" style="text-align:left">A8</td><td>Split Flange Guide Shaft Support (15 mm Bore)</td><td class="num">1</td><td class="num">17.77</td><td class="num">17.77</td><td>Shaft support and alignment</td></tr><tr><td class="num" style="text-align:left">A9</td><td>Split Flange Guide Shaft Support (12 mm Bore)</td><td class="num">1</td><td class="num">17.15</td><td class="num">17.15</td><td>Shaft support and alignment</td></tr><tr><td class="num" style="text-align:left">A10</td><td>SKF Deep Groove Ball Bearing (12 mm Bore)</td><td class="num">1</td><td class="num">9.36</td><td class="num">9.36</td><td>Low-friction shaft rotation</td></tr><tr><td class="num" style="text-align:left">A11</td><td>SKF Deep Groove Ball Bearing (15 mm Bore)</td><td class="num">1</td><td class="num">12.11</td><td class="num">12.11</td><td>Low-friction shaft rotation</td></tr><tr><td class="num" style="text-align:left">A12</td><td>Tuba Brass Heat-Set Threaded Inserts</td><td class="num">50</td><td class="num">0.15</td><td class="num">7.50</td><td>3D-printed part fastening (MOQ: 50)</td></tr><tr><td class="num" style="text-align:left">A13</td><td>Internal Retaining Ring (32 mm)</td><td class="num">2</td><td class="num">1.06</td><td class="num">2.12</td><td>Bearing retention</td></tr><tr><td class="num" style="text-align:left">A14</td><td>Internal Retaining Ring (29 mm)</td><td class="num">2</td><td class="num">1.06</td><td class="num">2.12</td><td>Bearing retention</td></tr><tr><td class="num" style="text-align:left">A15</td><td>AS5600 Magnetic Encoder Module (Stepper Motor Version)</td><td class="num">1</td><td class="num">87.44</td><td class="num">87.44</td><td>Position feedback</td></tr><tr><td class="num" style="text-align:left">A16</td><td>MG90S Servo (20T) Steering wheel</td><td class="num">1</td><td class="num">7.06</td><td class="num">7.06</td><td>Servo gear connection</td></tr><tr><td class="num" style="text-align:left">A17</td><td>Thrust Ball Bearing</td><td class="num">1</td><td class="num">3.68</td><td class="num">3.68</td><td>Axial load support</td></tr><tr><td class="num" style="text-align:left">A18</td><td>Thrust Ball Bearing (15 mm Bore)</td><td class="num">1</td><td class="num">4.88</td><td class="num">4.88</td><td>Axial load support</td></tr><tr><td class="num" style="text-align:left">A19</td><td>Lvwei 57 mm Closed-Loop Stepper Motor with Integrated Driver</td><td class="num">1</td><td class="num">164.67</td><td class="num">164.67</td><td>First arm actuation</td></tr><tr><td class="num" style="text-align:left">A20</td><td>Rubber Timing Belt (65 Teeth)</td><td class="num">1</td><td class="num">5.87</td><td class="num">5.87</td><td>Power transmission</td></tr><tr><td class="num" style="text-align:left">A21</td><td>Rubber Timing Belt (192 Teeth)</td><td class="num">1</td><td class="num">16.47</td><td class="num">16.47</td><td>Power transmission</td></tr><tr><td class="num" style="text-align:left">A22</td><td>Chrome-Plated Hardened Shaft (15 mm × 970 mm)</td><td class="num">1</td><td class="num">22.35</td><td class="num">22.35</td><td>Shaft support</td></tr><tr><td class="num" style="text-align:left">A23</td><td>Chrome-Plated Hardened Shaft (12 mm × 950 mm)</td><td class="num">1</td><td class="num">19.41</td><td class="num">19.41</td><td>Shaft support</td></tr><tr><td class="num" style="text-align:left">A24</td><td>H-Bridge Driver Board for Linear Actuator</td><td class="num">1</td><td class="num">22.12</td><td class="num">22.12</td><td>Linear actuator control</td></tr><tr><td class="num" style="text-align:left">A25</td><td>Electric Linear Actuator</td><td class="num">1</td><td class="num">125.90</td><td class="num">125.90</td><td>Upper platform lifting</td></tr><tr class='merged'><td class="num" style="text-align:left">A26 + A31</td><td>Steel arm sections ×2 and lift-to-rail sheet-metal connectors ×4 (one supplier, ¥100)</td><td class="num">1 lot</td><td class="num">117.70</td><td class="num">117.70</td><td>Robotic arm structure and lift-to-rail connection</td></tr><tr><td class="num" style="text-align:left">A27</td><td>Stainless Steel Sheet Metal Slide Rail Bracket</td><td class="num">1</td><td class="num">23.47</td><td class="num">23.47</td><td><span style='color:var(--muted)'>—</span></td></tr><tr><td class="num" style="text-align:left">A28</td><td>Aluminium Extrusion Sliding Carriage</td><td class="num">4</td><td class="num">22.35</td><td class="num">89.40</td><td>Guided sliding motion</td></tr><tr><td class="num" style="text-align:left">A29</td><td>Aluminium Extrusion Angle Bracket</td><td class="num">4</td><td class="num">4.60</td><td class="num">18.40</td><td>Extrusion frame connection</td></tr><tr><td class="num" style="text-align:left">A30</td><td>Chrome-Plated Base Plate</td><td class="num">1</td><td class="num">65.84</td><td class="num">65.84</td><td><span style='color:var(--muted)'>—</span></td></tr><tr><td class="num" style="text-align:left">A32</td><td>Serial PWM Servo Module with External Power Input</td><td class="num">1</td><td class="num">22.35</td><td class="num">22.35</td><td>Servo and pneumatic control</td></tr><tr><td class="num" style="text-align:left">A33</td><td>DC-DC Step-Down Voltage Regulator Module (5 V Output)</td><td class="num">1</td><td class="num">14.70</td><td class="num">14.70</td><td>5 V power supply</td></tr><tr><td class="num" style="text-align:left">A34</td><td>DC-DC Step-Down Voltage Regulator Module (12 V Output)</td><td class="num">1</td><td class="num">14.70</td><td class="num">14.70</td><td>12 V power supply</td></tr><tr><td class="num" style="text-align:left">A35</td><td>Wire Splicing Connector</td><td class="num">5</td><td class="num">2.10</td><td class="num">10.48</td><td>Electrical connections</td></tr><tr><td class="num" style="text-align:left">A36</td><td>Lifting Platform Sheet Metal Component</td><td class="num">1</td><td class="num">78.61</td><td class="num">78.61</td><td><span style='color:var(--muted)'>—</span></td></tr><tr><td class="num" style="text-align:left">A37</td><td>Vacuum Pump Suction Cup Set</td><td class="num">1</td><td class="num">58.90</td><td class="num">58.90</td><td>Vacuum pump, suction cup, solenoid valve</td></tr></tbody>
@@ -1160,6 +1188,53 @@ function show(k){const d=SW[k];box.classList.add('live');
 btns.forEach((b,j)=>b.addEventListener('click',()=>{pinned=true;i=j;show(b.dataset.s);}));
 show(keys[0]);
 if(!matchMedia('(prefers-reduced-motion: reduce)').matches)setInterval(()=>{if(pinned)return;i=(i+1)%keys.length;show(keys[i]);},3200);
+})();
+// ---------- project map ----------
+(()=>{const svg=document.getElementById('pmap');if(!svg)return;const NS='http://www.w3.org/2000/svg';
+const LEFT=[['Mission','mission',[['The loop','mission'],['Always-on safety layer','loop-guard']]],
+ ['Software','architecture',[['State machine','state-machine'],['Chassis stack','chassis-stack'],['Upper stack','upper-stack']]],
+ ['Perception','perception',[['Drone and flight safety','drone'],['Detection pipeline','pipeline'],['Onboard VLM limits','vlm-limits']]],
+ ['Localisation','navigation',[['Depth to point cloud','depth-cloud'],['Sensor fusion','fusion'],['Results','loc-results']]],
+ ['Arm planning','planning',[['Reachable workspace','workspace'],['Iterations','iterations']]],
+ ['Safety','safety',[['Stop, hold, drive','stop-zones'],['Fails safe','fail-safe']]]];
+const RIGHT=[['Mechanical','mechanical',[['Joints','joints'],['Shoulder section','shoulder'],['Hardware build','hardware']]],
+ ['Electrical','electrical',[['Architecture','elec-diagram'],['Revisions','elec-revisions']]],
+ ['Embedded control','firmware',[['Actuator status','actuators'],['Stepper firmware','stepper-fw']]],
+ ['Budget','budget',[['Spend by category','budget-cats'],['Full parts list','bom']]],
+ ['AI use','ai-use',[]],['Code','repos',[]]];
+const W=1180,RH=29,PADY=40;
+const rows=side=>side.reduce((n,b)=>n+Math.max(1,b[2].length)+0.55,0)-0.55;
+function el(t,a,par){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);par.appendChild(e);return e;}
+function build(){
+ svg.innerHTML='';const H=Math.max(rows(LEFT),rows(RIGHT))*RH+PADY*2;svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+ const edges=el('g',{},svg),nodes=el('g',{},svg),CX=W/2,cy=H/2+8;
+ const link=(id,cls)=>el('a',{href:'#'+id,class:cls},nodes);
+ function pill(a,label,x,y,align,padX,h,extra){extra=extra||0;const t=el('text',{x:0,y:y+5},a);t.textContent=label;
+  const w=t.getComputedTextLength()+padX*2+extra;const x0=align==='end'?x-w:align==='middle'?x-w/2:x;
+  t.setAttribute('x',x0+padX+extra);const r=el('rect',{x:x0,y:y-h/2,width:w,height:h,rx:h/2},a);a.insertBefore(r,a.firstChild);return {x0,w};}
+ const curve=(x1,y1,x2,y2)=>{const m=(x1+x2)/2;return el('path',{d:`M${x1} ${y1} C${m} ${y1},${m} ${y2},${x2} ${y2}`,class:'edge'},edges);};
+ const rb=pill(link('top','root'),'A06 LIBRARY ROBOT',CX,cy,'middle',22,46);
+ let n=0;
+ function side(list,dir){let y=cy-rows(list)*RH/2+RH/2;
+  const L1X=CX+dir*(rb.w/2+110),LFX=CX+dir*(rb.w/2+(dir>0?330:300));
+  list.forEach(([name,id,leaves])=>{n++;const span=Math.max(1,leaves.length),ly=y+(span-1)*RH/2;
+   const a=link(id,'l1');const num=el('text',{x:0,y:ly+4,class:'num'},a);num.textContent=String(n).padStart(2,'0');
+   const p=pill(a,name,L1X,ly,dir<0?'end':'start',14,30,24);num.setAttribute('x',p.x0+12);
+   const near=dir<0?p.x0+p.w:p.x0,far=dir<0?p.x0:p.x0+p.w;
+   const e0=curve(CX+dir*rb.w/2,cy,near,ly),branch=[e0,a];
+   leaves.forEach(([lab,lid],i)=>{const yy=y+i*RH,b=link(lid,'lf');
+    pill(b,lab,LFX+dir*12,yy,dir<0?'end':'start',9,24);el('circle',{cx:LFX,cy:yy,r:3.2},b);
+    const e=curve(far,ly,LFX-dir*4,yy);branch.push(e,b);
+    b.addEventListener('mouseenter',()=>[e,e0,a].forEach(x=>x.classList.add('hot')));
+    b.addEventListener('mouseleave',()=>[e,e0,a].forEach(x=>x.classList.remove('hot')));});
+   a.addEventListener('mouseenter',()=>branch.forEach(x=>x.classList.add('hot')));
+   a.addEventListener('mouseleave',()=>branch.forEach(x=>x.classList.remove('hot')));
+   y+=(span+0.55)*RH;});}
+ side(LEFT,-1);side(RIGHT,1);
+ el('text',{x:16,y:20,class:'side'},svg).textContent='SOFTWARE & INTELLIGENCE';
+ el('text',{x:W-16,y:20,class:'side','text-anchor':'end'},svg).textContent='HARDWARE & PROJECT';}
+build();
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(build);
 })();
 // ---------- nav: progress + active section ----------
 (()=>{const prog=document.getElementById('prog'),links=[...document.querySelectorAll('.bar nav a')];
