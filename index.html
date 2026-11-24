@@ -878,37 +878,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       
     </div>
 
-    <div class="subhead" id="power-dist"><h3>Power distribution, budget and pins</h3><p>An E-stop cuts every actuator at once; the controller stays powered so it can see the stop.</p></div>
+    <div class="subhead" id="power-dist"><h3>One E-stop, every actuator</h3><p>An E-stop cuts every actuator at once; the controller stays powered so it can see the stop.</p></div>
     <figure class="pwrfig"><img src="media/power-dist.svg" alt="Power distribution: 24 V supply, main fuse, E-stop, 24 V actuator bus feeding the two steppers, the valve, a 12 V buck for pump and linear actuator, and a 5 V buck for the servo module. The PC, STM32 and AS5600 sensors are on a separate logic supply not cut by the E-stop." width="780" height="575" loading="lazy">
-      <figcaption>Currents are typical / peak. Every ground meets at the supply negative.</figcaption></figure>
-    <div class="grid2 pwrtbls">
-      <div class="tbl" id="power-budget"><table>
-        <thead><tr><th>Load</th><th>Rail</th><th>Typ. / peak</th><th style="text-align:right">24 V peak</th></tr></thead>
-        <tbody>
-          <tr><td>Stepper 1 (shoulder)</td><td>24 V</td><td>1.0 / 3.0 A</td><td class="num">3.00 A</td></tr>
-          <tr><td>Stepper 2 (elbow)</td><td>24 V</td><td>0.6 / 1.5 A</td><td class="num">1.50 A</td></tr>
-          <tr><td>Solenoid valve</td><td>24 V</td><td>0.2 / 0.2 A</td><td class="num">0.20 A</td></tr>
-          <tr><td>Linear actuator</td><td>12 V</td><td>1.0 / 3.0 A</td><td class="num">1.67 A</td></tr>
-          <tr><td>Air pump</td><td>12 V</td><td>0.4 / 0.6 A</td><td class="num">0.33 A</td></tr>
-          <tr><td>Servo + PWM module</td><td>5 V</td><td>0.25 / 1.3 A</td><td class="num">0.30 A</td></tr>
-        </tbody>
-        <tfoot><tr><td colspan="3">All at peak · lift idle while arm moves</td><td class="num">7.0 · 5.3 A</td></tr></tfoot>
-      </table><p class="pwrnote">Supply: 24 V, at least 7.5 A. 12 V buck at least 5 A. Currents are typical for each class of part, to be confirmed on the bench.</p></div>
-      <div class="tbl" id="pins"><table>
-        <thead><tr><th>Function</th><th>STM32 pin</th><th>Peripheral</th><th>Status</th></tr></thead>
-        <tbody>
-          <tr><td>PC link</td><td>PA11 / PA12</td><td>USB CDC</td><td><span class="chip s-tested">In use</span></td></tr>
-          <tr><td>Stepper 1 pulse / dir</td><td>PA8 / PB0</td><td>TIM1_CH1 / GPIO</td><td><span class="chip s-tested">In use</span></td></tr>
-          <tr><td>Stepper 2 step / dir / en</td><td>PC6 / PC7 / PC8</td><td>TIM8_CH1 / GPIO</td><td><span class="chip s-proto">Planned</span></td></tr>
-          <tr><td>Linear actuator IN1 / IN2</td><td>PD12 / PD13</td><td>TIM4_CH1 / CH2</td><td><span class="chip s-proto">Planned</span></td></tr>
-          <tr><td>PWM module TX / RX</td><td>PA2 / PA3</td><td>USART2</td><td><span class="chip s-proto">Planned</span></td></tr>
-          <tr><td>Servo feedback</td><td>PC0</td><td>ADC1_IN10 (2:1 divider)</td><td><span class="chip s-proto">Planned</span></td></tr>
-          <tr><td>AS5600 #1 SCL / SDA</td><td>PB6 / PB7</td><td>I2C1</td><td><span class="chip s-proto">Planned</span></td></tr>
-          <tr><td>AS5600 #2 SCL / SDA</td><td>PB10 / PB11</td><td>I2C2</td><td><span class="chip s-proto">Planned</span></td></tr>
-          <tr><td>E-stop status</td><td>PD0</td><td>GPIO in, pull-up</td><td><span class="chip s-proto">Planned</span></td></tr>
-        </tbody>
-      </table></div>
-    </div>
+      <figcaption>Power distribution. Budget and pin allocation are in the report.</figcaption></figure>
   </div>
 </section>
 
