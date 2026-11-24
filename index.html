@@ -401,6 +401,13 @@ figcaption b{color:var(--paper);font-weight:500}
 .bin b{font:700 1.1rem var(--font-display)}
 .bin.pub{color:#5fd38a}.bin.per{color:#7fa6ff}.bin.was{color:var(--amber)}
 .pd-note{font-size:.78rem;color:var(--muted);margin-top:12px}
+/* arm demo */
+.adem{margin-top:36px}
+.ad-view{position:relative;height:540px;border:1px solid var(--line);background:radial-gradient(ellipse at 50% 30%,#152234,#0a0f16 75%)}
+.ad-view canvas{width:100%;height:100%;display:block;cursor:grab;touch-action:none}
+.ad-view canvas:active{cursor:grabbing}
+.ad-key{position:absolute;left:14px;bottom:12px;display:flex;gap:16px;font:400 .72rem var(--font-mono);color:var(--muted);pointer-events:none}
+.ad-key i{display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px}
 /* polish */
 .kpis{border-bottom:1px solid var(--line);background:linear-gradient(180deg,#0f1620,var(--ink))}
 .kpis .wrap{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
@@ -1004,6 +1011,21 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
           <text x="40" y="112" fill="#56a9a3">reachable</text><text x="252" y="320" text-anchor="middle" fill="#ff9b97">dead zone</text>
         </svg></div><figcaption><b>Reachable workspace.</b> Redrawn from the planner's figure: teal is reachable, red is the inner dead zone the link optimiser keeps small.</figcaption></figure>
     </div>
+    <div class="pdemo adem" id="arm-demo">
+      <div class="pd-top">
+        <div class="pd-steps" role="group" aria-label="Planning step">
+          <button class="pd-step" data-st="0"><i>1</i>Plan from above</button>
+          <button class="pd-step" data-st="1"><i>2</i>Lift into 3D</button>
+          <button class="pd-step" data-st="2"><i>3</i>Follow the path</button>
+        </div>
+        <div class="pd-ctl"><span class="pd-count" id="ad-read">z = —</span><button class="btn" id="ad-replay">Replay</button></div>
+      </div>
+      <p class="pd-say" id="ad-say" aria-live="polite">Objects on the desk are known as boxes: a footprint and a height.</p>
+      <div class="ad-view"><canvas id="ad-gl" aria-label="Animated arm trajectory over boxes of different heights"></canvas><div class="vfallback" id="ad-fail">This demo needs WebGL 2.</div>
+        <div class="ad-key"><span><i style="background:#e39b4b"></i>planned tip path</span><span><i style="background:#5fd38a"></i>target</span><span><i style="background:#7fa6ff"></i>obstacles (height = box)</span></div>
+      </div>
+      <p class="pd-note">Illustration of the planner's dynamic-Z rule on our own arm model: the tip keeps 60 mm above whatever is underneath, then descends onto the target. The object layout is made up for the demo; the arm geometry and joints come from <code>upper_assembly.urdf</code>, solved with 2R inverse kinematics plus the lift.</p>
+    </div>
     <h3 id="iterations" style="margin:40px 0 14px">Four iterations in two days</h3>
     <div class="iters">
       <div><b>arm2.0</b><span>9 Nov</span><p>Fixed base, three planning joints, text-only workspace and inverse-kinematics check.</p></div>
@@ -1323,6 +1345,139 @@ document.getElementById('pd-replay').onclick=()=>run();
 steps.forEach(b=>b.addEventListener('click',()=>run()));
 let started=false;new IntersectionObserver(es=>{if(!started&&es[0].isIntersecting){started=true;run();}},{threshold:.35}).observe(root);
 let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{if(started)run();},400);});
+})();
+// ---------- arm trajectory demo ----------
+(()=>{const root=document.getElementById('arm-demo');if(!root)return;
+const canvas=document.getElementById('ad-gl'),gl=canvas.getContext('webgl2',{antialias:true,alpha:true,premultipliedAlpha:false});
+if(!gl){document.getElementById('ad-fail').style.display='grid';return;}
+const say=document.getElementById('ad-say'),read=document.getElementById('ad-read'),steps=[...root.querySelectorAll('.pd-step')];
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+// ---- math
+const mul=(a,b)=>{const o=new Float32Array(16);for(let c=0;c<4;c++)for(let r=0;r<4;r++){let s=0;for(let k=0;k<4;k++)s+=a[k*4+r]*b[c*4+k];o[c*4+r]=s;}return o;};
+const I=()=>{const m=new Float32Array(16);m[0]=m[5]=m[10]=m[15]=1;return m;};
+const T=(x,y,z)=>{const m=I();m[12]=x;m[13]=y;m[14]=z;return m;};
+const S=(x,y,z)=>{const m=I();m[0]=x;m[5]=y;m[10]=z;return m;};
+const Rz=a=>{const m=I(),c=Math.cos(a),s=Math.sin(a);m[0]=c;m[1]=s;m[4]=-s;m[5]=c;return m;};
+const persp=(f,a,n,fa)=>{const t=1/Math.tan(f/2),m=new Float32Array(16);m[0]=t/a;m[5]=t;m[10]=(fa+n)/(n-fa);m[11]=-1;m[14]=2*fa*n/(n-fa);return m;};
+const sub=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]],dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2],cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],norm=a=>{const l=Math.hypot(...a);return a.map(v=>v/l);};
+const look=(e,c,up)=>{const z=norm(sub(e,c)),x=norm(cross(up,z)),y=cross(z,x);return new Float32Array([x[0],y[0],z[0],0,x[1],y[1],z[1],0,x[2],y[2],z[2],0,-dot(x,e),-dot(y,e),-dot(z,e),1]);};
+const lerp=(a,b,t)=>a+(b-a)*t,ease=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2,clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+// ---- arm (from upper_assembly.urdf)
+const JO=[[2.578075143e-07,0.07587158479,0.4139500011],[0.06910347519,-0.01418182917,0.14306],[-0.2903915554,0.07531762434,0.047],[0.0140793776,-0.02106398051,-0.1125],[0.2410888827,-0.3668084315,0.1130583875]];
+const EXA=[0.5557032705,-0.8313807041],SH=[0.06910347519,0.07587158479-0.01418182917],V1=[-0.2903915554,0.07531762434],V2=[0.0140793776+0.2410888827+0.0121,-0.02106398051-0.3668084315-0.0028],Z0=0.4229;
+const wrap=x=>{x=(x+Math.PI)%(2*Math.PI);if(x<0)x+=2*Math.PI;return x-Math.PI;};
+function ik(tx,ty,d,prev){const v2=[V2[0]+d*EXA[0],V2[1]+d*EXA[1]],l1=Math.hypot(...V1),l2=Math.hypot(...v2),a1=Math.atan2(V1[1],V1[0]),a2=Math.atan2(v2[1],v2[0]);
+ const rx=tx-SH[0],ry=ty-SH[1],D=Math.hypot(rx,ry),g=Math.atan2(ry,rx),c=clamp((l1*l1+D*D-l2*l2)/(2*l1*D),-1,1);let best=null,bs=1e9;
+ for(const sg of[1,-1]){const p1=g+sg*Math.acos(c),ex=l1*Math.cos(p1),ey=l1*Math.sin(p1),p2=Math.atan2(ry-ey,rx-ex);
+  let t1=wrap(p1-a1),t2=wrap(p2-a2-(p1-a1));t1=prev[0]+wrap(t1-prev[0]);t2=prev[1]+wrap(t2-prev[1]);const sc=Math.abs(t1-prev[0])+Math.abs(t2-prev[1]);if(sc<bs){bs=sc;best=[t1,t2];}}return best;}
+// ---- scene: desk + boxes (metres, robot frame; +Y is the front)
+const DESK={x0:-0.42,x1:0.46,y0:0.34,y1:0.88,z:0.40};
+const OBS=[{c:[-0.13,0.50],s:[0.17,0.12],h:0.06},{c:[0.04,0.64],s:[0.24,0.16],h:0.035},{c:[0.19,0.50],s:[0.08,0.08],h:0.12},{c:[-0.27,0.73],s:[0.13,0.13],h:0.16},{c:[0.36,0.53],s:[0.10,0.16],h:0.09}];
+const TGT={c:[0.31,0.75],s:[0.08,0.05],h:0.02};
+const WP=[[-0.32,0.40],[-0.14,0.49],[0.04,0.60],[0.20,0.67],[0.31,0.75]];
+function catmull(P,n){const out=[];const pts=[P[0],...P,P[P.length-1]];for(let i=1;i<pts.length-2;i++)for(let k=0;k<n;k++){const t=k/n,[p0,p1,p2,p3]=[pts[i-1],pts[i],pts[i+1],pts[i+2]];
+ out.push([0,1].map(j=>0.5*((2*p1[j])+(-p0[j]+p2[j])*t+(2*p0[j]-5*p1[j]+4*p2[j]-p3[j])*t*t+(-p0[j]+3*p1[j]-3*p2[j]+p3[j])*t*t*t)));}out.push(P[P.length-1]);return out;}
+const XY=catmull(WP,40),N=XY.length,CLR=0.06,R=0.03;
+const under=(x,y)=>{let h=DESK.z;for(const o of OBS)if(Math.abs(x-o.c[0])<o.s[0]/2+R&&Math.abs(y-o.c[1])<o.s[1]/2+R)h=Math.max(h,DESK.z+o.h);return h;};
+let zr=XY.map(([x,y])=>under(x,y)+CLR);const W=10;zr=zr.map((_,i)=>Math.max(...zr.slice(Math.max(0,i-W),i+W+1)));
+let zs=zr.map((_,i)=>{const a=zr.slice(Math.max(0,i-6),i+7);return a.reduce((p,c)=>p+c,0)/a.length;});
+const ZT=DESK.z+TGT.h+0.008,ND=28;for(let i=N-ND;i<N;i++){const t=ease((i-(N-ND))/(ND-1));zs[i]=lerp(zs[N-ND-1],ZT,t);}
+zs=zs.map((z,i)=>i<N-ND?Math.max(z,zr[i]-0.002):z);
+// joint solution along the path
+let prev=[-1.2,0.6];const Q=XY.map(([x,y],i)=>{const a=ik(x,y,0,prev);prev=a;const z=zs[i];const lift=clamp(z-Z0,0,0.3);const rack=clamp(z-Z0-lift,-0.06,0.06);return [lift,a[0],a[1],0,rack];});
+// ---- GL
+const VS=`#version 300 es
+layout(location=0) in vec3 aP;uniform mat4 uM,uVP;uniform vec3 uLo,uSc;out vec3 vW;
+void main(){vec3 p=uLo+(aP+32767.0)*uSc;vec4 w=uM*vec4(p,1.0);vW=w.xyz;gl_Position=uVP*w;}`;
+const FS=`#version 300 es
+precision highp float;in vec3 vW;uniform vec3 uC,uEye;uniform float uA;out vec4 o;
+void main(){vec3 n=normalize(cross(dFdx(vW),dFdy(vW)));vec3 v=normalize(uEye-vW);if(dot(n,v)<0.0)n=-n;
+ float hemi=0.5+0.5*n.z;vec3 amb=mix(vec3(0.10,0.11,0.13),vec3(0.32,0.35,0.40),hemi);
+ vec3 L=normalize(vec3(0.45,-0.6,0.75));float k=max(dot(n,L),0.0);float s=pow(max(dot(n,normalize(L+v)),0.0),40.0)*0.22;
+ float rim=pow(1.0-max(dot(n,v),0.0),3.0)*0.3;o=vec4(uC*(amb+k*0.95)+s+rim*vec3(0.45,0.6,0.8),uA);}`;
+const LVS=`#version 300 es
+layout(location=0) in vec3 aP;uniform mat4 uVP,uM;void main(){gl_Position=uVP*uM*vec4(aP,1.0);}`;
+const LFS=`#version 300 es
+precision mediump float;uniform vec4 uC;out vec4 o;void main(){o=uC;}`;
+function prog(vs,fs){const p=gl.createProgram();for(const[t,src]of[[gl.VERTEX_SHADER,vs],[gl.FRAGMENT_SHADER,fs]]){const sh=gl.createShader(t);gl.shaderSource(sh,src);gl.compileShader(sh);gl.attachShader(p,sh);}gl.linkProgram(p);return p;}
+const P=prog(VS,FS),LP=prog(LVS,LFS),U=n=>gl.getUniformLocation(P,n),LU=n=>gl.getUniformLocation(LP,n);
+const u={M:U('uM'),VP:U('uVP'),Lo:U('uLo'),Sc:U('uSc'),C:U('uC'),Eye:U('uEye'),A:U('uA')},lu={VP:LU('uVP'),M:LU('uM'),C:LU('uC')};
+function vao(data,type,size){const v=gl.createVertexArray();gl.bindVertexArray(v);const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,data,gl.DYNAMIC_DRAW);gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,3,type,false,0,0);gl.bindVertexArray(null);return{v,b};}
+// unit cube centred in x,y, z from 0..1
+const cubeT=[],cubeE=[];{const c=[[-.5,-.5,0],[.5,-.5,0],[.5,.5,0],[-.5,.5,0],[-.5,-.5,1],[.5,-.5,1],[.5,.5,1],[-.5,.5,1]];
+ const f=[[0,1,2,0,2,3],[4,6,5,4,7,6],[0,4,5,0,5,1],[1,5,6,1,6,2],[2,6,7,2,7,3],[3,7,4,3,4,0]];f.forEach(q=>q.forEach(i=>cubeT.push(...c[i])));
+ [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]].forEach(([a,b])=>cubeE.push(...c[a],...c[b]));}
+const CUBE=vao(new Float32Array(cubeT),gl.FLOAT),EDGE=vao(new Float32Array(cubeE),gl.FLOAT);
+const PATH=vao(new Float32Array(N*3),gl.FLOAT);
+const pathArr=new Float32Array(N*3);
+let meshes=null;
+fetch('assets/robot-mesh.json').then(r=>r.json()).then(j=>{const bin=atob(j.data),buf=new ArrayBuffer(bin.length),u8=new Uint8Array(buf);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
+ meshes=j.links.map(m=>{const v=gl.createVertexArray();gl.bindVertexArray(v);const vb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vb);gl.bufferData(gl.ARRAY_BUFFER,new Int16Array(buf,m.pos,m.vcount*3),gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,3,gl.SHORT,false,0,0);const ib=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ib);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array(buf,m.idx,m.icount),gl.STATIC_DRAW);gl.bindVertexArray(null);
+  return{name:m.name,v,ic:m.icount,lo:m.lo,sc:m.sc};});});
+const COL={base_link:[.32,.44,.58],lift_link:[.32,.65,.63],arm1_link:[.88,.6,.29],arm2_link:[.88,.6,.29],extension_link:[.55,.61,.7],rack_link:[.72,.75,.78]};
+const CHAIN=['lift_link','arm1_link','arm2_link','extension_link','rack_link'];
+function fk(q){const W={base_link:I()};let par='base_link';CHAIN.forEach((c,i)=>{let m=mul(W[par],T(...JO[i]));
+ if(i===0||i===4)m=mul(m,T(0,0,q[i]));else if(i===3)m=mul(m,T(EXA[0]*q[3],EXA[1]*q[3],0));else m=mul(m,Rz(q[i]));W[c]=m;par=c;});return W;}
+// ---- timeline
+const DUR=[2.6,2.4,6.0,1.6];let t0=performance.now(),playing=true,stepPinned=-1;
+const TEXT=['1 · From above, the planner sees each object as a footprint and draws the tip path from the start to the target.',
+ '2 · Every box gets its height. The path lifts to stay 60 mm above whatever is underneath, then drops onto the target.',
+ '3 · The joints are solved along the path and our arm follows it: lift for height, shoulder and elbow for position.'];
+function restart(at){t0=performance.now()-(at||0)*1000;playing=true;}
+document.getElementById('ad-replay').onclick=()=>restart(0);
+steps.forEach((b,i)=>b.addEventListener('click',()=>restart(DUR.slice(0,i).reduce((a,c)=>a+c,0)+(i?0.01:0))));
+let yaw=-1.25,pitch=0.52,drag=null,userYaw=0,userPitch=0;
+canvas.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY};canvas.setPointerCapture(e.pointerId);});
+canvas.addEventListener('pointermove',e=>{if(!drag)return;userYaw-=(e.clientX-drag.x)*0.008;userPitch=clamp(userPitch+(e.clientY-drag.y)*0.006,-0.4,0.9);drag={x:e.clientX,y:e.clientY};});
+canvas.addEventListener('pointerup',()=>drag=null);canvas.addEventListener('pointercancel',()=>drag=null);
+let visible=false;new IntersectionObserver(es=>{const v=es[0].isIntersecting;if(v&&!visible)restart(0);visible=v;},{threshold:.3}).observe(root);
+let lastStep=-1;
+function frame(now){requestAnimationFrame(frame);if(!visible)return;
+ const r=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2),w=Math.round(r.width*dpr),h=Math.round(r.height*dpr);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}
+ let t=(now-t0)/1000;const total=DUR.reduce((a,c)=>a+c,0);if(reduce)t=total;t=Math.min(t,total);
+ const k1=clamp(t/DUR[0],0,1),k2=clamp((t-DUR[0])/DUR[1],0,1),k3=clamp((t-DUR[0]-DUR[1])/DUR[2],0,1);
+ const step=t<DUR[0]?0:t<DUR[0]+DUR[1]?1:2;if(step!==lastStep){lastStep=step;steps.forEach((b,j)=>{b.classList.toggle('on',j===step);b.classList.toggle('done',j<step);});say.textContent=TEXT[step];}
+ const e2=ease(k2);
+ // camera: top-down -> 3/4 view
+ const cp=lerp(1.5,0.36,e2)+userPitch*e2,cy=lerp(-Math.PI/2,0.42,e2)+userYaw,dist=lerp(1.45,1.7,e2);const tgt=[0.02,lerp(0.6,0.48,e2),lerp(0.40,0.46,e2)];
+ const eye=[tgt[0]+dist*Math.cos(cp)*Math.cos(cy),tgt[1]+dist*Math.cos(cp)*Math.sin(cy),tgt[2]+dist*Math.sin(cp)];
+ const up=[0,0,1];const VP=mul(persp(0.62,w/Math.max(h,1),0.05,10),look(eye,tgt,up));
+ gl.viewport(0,0,w,h);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.enable(gl.DEPTH_TEST);
+ // path geometry (flat during step 1, lifting in step 2)
+ for(let i=0;i<N;i++){pathArr[i*3]=XY[i][0];pathArr[i*3+1]=XY[i][1];pathArr[i*3+2]=lerp(DESK.z+0.003,zs[i],e2);}
+ gl.bindBuffer(gl.ARRAY_BUFFER,PATH.b);gl.bufferData(gl.ARRAY_BUFFER,pathArr,gl.DYNAMIC_DRAW);
+ // arm pose
+ const idx=Math.round(ease(k3)*(N-1));const q=Q[idx];const W2=fk(q);
+ read.textContent=k3>0?`tip ${Math.round((zs[idx]-DESK.z)*1000)} mm above desk`:(t<DUR[0]?'top view':'3D view');
+ // solids
+ gl.useProgram(P);gl.uniformMatrix4fv(u.VP,false,VP);gl.uniform3fv(u.Eye,eye);gl.uniform3f(u.Lo,-32767,-32767,-32767);gl.uniform3f(u.Sc,1,1,1);
+ const solid=(M,c,a)=>{gl.uniformMatrix4fv(u.M,false,M);gl.uniform3fv(u.C,c);gl.uniform1f(u.A,a);gl.bindVertexArray(CUBE.v);gl.drawArrays(gl.TRIANGLES,0,36);};
+ // desk slab + legs
+ const dx=(DESK.x0+DESK.x1)/2,dy=(DESK.y0+DESK.y1)/2,dw=DESK.x1-DESK.x0,dh=DESK.y1-DESK.y0;
+ solid(mul(T(dx,dy,DESK.z-0.025),S(dw,dh,0.025)),[.30,.33,.38],1);
+ for(const[lx,ly]of[[DESK.x0+.03,DESK.y0+.03],[DESK.x1-.03,DESK.y0+.03],[DESK.x0+.03,DESK.y1-.03],[DESK.x1-.03,DESK.y1-.03]])solid(mul(T(lx,ly,0),S(0.03,0.03,DESK.z-0.025)),[.2,.23,.28],1);
+ if(meshes){meshes.forEach(m=>{gl.uniformMatrix4fv(u.M,false,W2[m.name]);gl.uniform3fv(u.Lo,m.lo);gl.uniform3fv(u.Sc,m.sc);gl.uniform3fv(u.C,COL[m.name]);gl.uniform1f(u.A,1);gl.bindVertexArray(m.v);gl.drawElements(gl.TRIANGLES,m.ic,gl.UNSIGNED_SHORT,0);});
+  gl.uniform3f(u.Lo,-32767,-32767,-32767);gl.uniform3f(u.Sc,1,1,1);}
+ // boxes (translucent)
+ gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.depthMask(false);
+ const hk=lerp(0.004,1,e2);
+ for(const o of OBS)solid(mul(T(o.c[0],o.c[1],DESK.z),S(o.s[0],o.s[1],Math.max(0.002,o.h*hk))),[.36,.50,.80],0.42);
+ solid(mul(T(TGT.c[0],TGT.c[1],DESK.z),S(TGT.s[0],TGT.s[1],Math.max(0.002,TGT.h*hk))),[.37,.83,.54],0.7);
+ const drawnB=Math.max(2,Math.round(ease(k1)*N));
+ for(let i=0;i<drawnB;i+=2){const z=pathArr[i*3+2];const done=k3>0&&i<=idx;solid(mul(T(pathArr[i*3],pathArr[i*3+1],z-0.006),S(0.012,0.012,0.012)),done?[1,.72,.38]:[.89,.61,.29],done?1:(k3>0?0.35:0.9));}
+ if(k3>0){const i=idx;solid(mul(T(pathArr[i*3],pathArr[i*3+1],pathArr[i*3+2]-0.014),S(0.028,0.028,0.028)),[1,.85,.55],1);}
+ gl.depthMask(true);
+ // edges + path
+ gl.useProgram(LP);gl.uniformMatrix4fv(lu.VP,false,VP);
+ const edge=(M,c)=>{gl.uniformMatrix4fv(lu.M,false,M);gl.uniform4fv(lu.C,c);gl.bindVertexArray(EDGE.v);gl.drawArrays(gl.LINES,0,24);};
+ for(const o of OBS)edge(mul(T(o.c[0],o.c[1],DESK.z),S(o.s[0],o.s[1],Math.max(0.002,o.h*hk))),[.55,.68,1,.9]);
+ edge(mul(T(TGT.c[0],TGT.c[1],DESK.z),S(TGT.s[0],TGT.s[1],Math.max(0.002,TGT.h*hk))),[.45,.95,.62,1]);
+ gl.uniformMatrix4fv(lu.M,false,I());gl.bindVertexArray(PATH.v);
+ gl.uniform4f(lu.C,.89,.61,.29,0.6);gl.drawArrays(gl.LINE_STRIP,0,drawnB);
+ gl.disable(gl.BLEND);
+}
+requestAnimationFrame(frame);
 })();
 // ---------- project map ----------
 (()=>{const svg=document.getElementById('pmap');if(!svg)return;const NS='http://www.w3.org/2000/svg';
