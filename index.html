@@ -1468,7 +1468,7 @@ function defs(){const d=el('defs',{},links),m=el('marker',{id:'pdah',viewBox:'0 
 const _clear=clear;clear=function(){_clear();defs();};
 document.getElementById('pd-replay').onclick=()=>run();
 steps.forEach(b=>b.addEventListener('click',()=>run()));
-let started=false;new IntersectionObserver(es=>{if(!started&&es[0].isIntersecting){started=true;run();}},{threshold:.35}).observe(root);
+let started=false,inView=false;new IntersectionObserver(es=>{const v=es[0].isIntersecting;if(v&&!inView){started=true;run();}inView=v;},{threshold:.35}).observe(root);
 let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{if(started)run();},400);});
 })();
 // ---------- arm trajectory demo ----------
