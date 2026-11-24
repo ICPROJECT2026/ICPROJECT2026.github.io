@@ -441,6 +441,49 @@ section.alt .nd,section.alt .card,section.alt .aiphase{background:#162030}
   .kpis a:first-child{animation-delay:.28s}
 }
 .bomd summary{cursor:pointer;font:500 .8rem var(--font-mono);color:var(--amber);padding:10px 0}
+
+/* nav change */
+.navcmp{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr) minmax(0,1.25fr);gap:18px;align-items:stretch}
+.nv{border:1px solid var(--line);padding:18px 20px;background:var(--ink)}
+.nv h4{margin:0 0 10px;font:600 1.15rem var(--font-display);letter-spacing:.02em}
+.nv.old{border-style:dashed;color:var(--muted)}
+.nv.old li{text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--muted) 60%,transparent)}
+.nv ol{margin:0;padding-left:18px;display:grid;gap:6px;font-size:.9rem}
+.nv .ph{font:500 .68rem var(--font-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--teal);margin:12px 0 4px}
+.nv .ph:first-of-type{margin-top:0}
+.nv.new{border-color:color-mix(in srgb,var(--teal) 55%,var(--line))}
+.arena{border:1px solid var(--line);background:var(--panel);padding:10px}
+.arena svg{width:100%;height:auto;display:block}
+.arena figcaption{font-size:.8rem;color:var(--muted);margin-top:6px}
+/* risks */
+.risks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.risk{border:1px solid var(--line);background:var(--ink);display:grid;grid-template-rows:auto 1fr auto}
+.risk .rh{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.risk .rh b{font:600 1.25rem var(--font-display)}
+.risk .rh span{font:500 .66rem var(--font-mono);color:#ff8d88;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}
+.risk p{margin:0;padding:14px 20px;color:var(--muted);font-size:.92rem}
+.risk .pb{padding:14px 20px;background:color-mix(in srgb,var(--teal) 9%,transparent);border-top:1px solid var(--line);font-size:.92rem}
+.risk .pb i{font:500 .68rem var(--font-mono);font-style:normal;color:var(--teal);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px}
+.risk svg{display:block;width:100%;height:auto;max-height:150px;padding:6px 20px 0}
+/* plan */
+.roles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:26px}
+.roles div{background:var(--ink);padding:14px 16px}
+.roles b{display:block;font:600 1.05rem var(--font-display);margin-bottom:6px}
+.roles span{display:block;font-size:.86rem;color:var(--muted)}
+.gantt{border:1px solid var(--line);overflow-x:auto}
+.gantt .gr{display:grid;grid-template-columns:250px repeat(13,minmax(34px,1fr));min-width:720px;border-bottom:1px solid var(--line)}
+.gantt .gr:last-child{border-bottom:0}
+.gantt .gl{padding:9px 14px;font-size:.86rem;border-right:1px solid var(--line)}
+.gantt .gh div{font:500 .7rem var(--font-mono);color:var(--muted);text-align:center;padding:6px 0;border-right:1px solid color-mix(in srgb,var(--line) 50%,transparent)}
+.gantt .gh div.cw{color:#ff8d88}
+.gantt .bar{grid-row:1;align-self:center;height:14px;margin:0 3px;background:color-mix(in srgb,var(--c,var(--amber)) 70%,transparent);border:1px solid var(--c,var(--amber))}
+.gantt .ms{grid-row:1;align-self:center;justify-self:center;width:12px;height:12px;transform:rotate(45deg);background:#ff8d88}
+.gantt .gr.mrow .gl{color:#ff8d88;font-family:var(--font-mono);font-size:.76rem}
+.gantt .gr > *{grid-row:1}
+.gkey{display:flex;gap:18px;flex-wrap:wrap;font-size:.84rem;color:var(--muted);margin-top:10px}
+.gkey i{display:inline-block;width:10px;height:10px;transform:rotate(45deg);background:#ff8d88;margin-right:6px}
+@media (max-width:1000px){.navcmp{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.arena{grid-column:1/-1}.roles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:680px){.navcmp,.risks{grid-template-columns:minmax(0,1fr)}.roles{grid-template-columns:minmax(0,1fr)}.gantt .gr{grid-template-columns:150px repeat(13,minmax(30px,1fr));min-width:560px}}
 /* tbc */
 .tbc{border:1.5px dashed var(--line);padding:24px}
 .tbc ul{margin:12px 0 0;padding-left:18px;color:var(--muted);display:grid;gap:6px}
@@ -490,7 +533,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <nav aria-label="Sections">
       <a href="#project-map">Map</a><a href="#mission">Mission</a><a href="#architecture">Software</a><a href="#mechanical">Mechanical</a>
       <a href="#electrical">Electrical</a><a href="#firmware">Control</a><a href="#perception">Perception</a>
-      <a href="#planning">Arm</a><a href="#safety">Safety</a><a href="#navigation">Localisation</a><a href="#budget">Budget</a><a href="#ai-use">AI</a><a href="#repos">Code</a>
+      <a href="#planning">Arm</a><a href="#safety">Safety</a><a href="#navigation">Localisation</a><a href="#budget">Budget</a><a href="#risks">Risks</a><a href="#plan">Plan</a><a href="#ai-use">AI</a><a href="#repos">Code</a>
     </nav>
   </div>
 </header>
@@ -533,7 +576,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <a href="#firmware"><b>4<small>/ 6</small></b><span>actuator branches already under control</span></a>
     <a href="#perception"><b>5.5<small>s</small></b><span>to sort one desk photo with a 4-bit VLM on 8 GB</span></a>
     <a href="#safety"><b>41</b><span>safety-logic tests passing in the stop-for-people layer</span></a>
-    <a href="#budget"><b><small>HK$</small>1,214</b><span>total parts budget across 36 order lines</span></a>
+    <a href="#budget"><b><small>HK$</small>1,387</b><span>total budget across 39 lines in two orders</span></a>
   </div>
 </div>
 
@@ -548,7 +591,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <div class="loop">
       <div class="st"><span class="n">01 · before the run</span><h3>Survey</h3><p>3D-scan the room; mark waypoints, operation and observation points.</p><span class="who">Chassis</span><span class="chip s-tbc">In progress</span></div>
       <div class="st"><span class="n">02</span><h3>Localise</h3><p>Depth clouds matched to the map, fused with wheel odometry.</p><span class="who">Chassis</span><span class="chip s-proto">Simulated</span></div>
-      <div class="st"><span class="n">03</span><h3>Check seats</h3><p>Human legs under a desk mean occupied: skip it.</p><span class="who">Chassis</span><span class="chip s-tbc">In progress</span></div>
+      <div class="st"><span class="n">03</span><h3>Check seats</h3><p>The onboard VLM checks each desk from the observation point: if someone is using it, skip it.</p><span class="who">Chassis</span><span class="chip s-tbc">In progress</span></div>
       <div class="st"><span class="n">04</span><h3>Travel</h3><p>Drive to the next free desk with Nav2.</p><span class="who">Chassis</span><span class="chip s-tbc">In progress</span></div>
       <div class="st up"><span class="n">05</span><h3>Inspect</h3><p>Skip reserved desks; otherwise fly the drone and photograph the desk.</p><span class="who">Upper</span><span class="chip s-tbc">In progress</span></div>
       <div class="st up"><span class="n">06</span><h3>Classify</h3><p>Find each object; label it public, personal or waste.</p><span class="who">Upper</span><span class="chip s-tested">Tested</span></div>
@@ -568,7 +611,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <p class="intro">Chassis decides where to go, upper stack decides what to do. Pick a state to see which modules it uses.</p>
     </div>
     <div class="sw">
-      <div class="lane" id="chassis-stack"><div class="lh"><b>Chassis stack</b><span>where to go</span></div><div class="nodes"><div class="nd" data-m="map"><b>Pre-built map</b><span>3D scan with waypoints, operation points and observation points</span><span class="chip s-tbc">TBC</span></div><div class="nd" data-m="loc"><b>Localisation</b><span>NDT map matching on depth clouds, wheel-odometry prediction; 4.5 cm in sim</span><span class="chip s-proto">Prototype</span></div><div class="nd" data-m="occ"><b>Occupancy</b><span>Human legs beside desk legs mark a desk occupied</span><span class="chip s-tbc">TBC</span></div><div class="nd" data-m="route"><b>Route choice</b><span>Next free desk from what was observed</span><span class="chip s-tbc">TBC</span></div><div class="nd" data-m="nav"><b>Nav2</b><span>Drives between chosen points</span><span class="chip s-tbc">TBC</span></div><div class="nd" data-m="safe"><b>Safety gate</b><span>YOLO11n + RGB-D depth; stops within 1.0 m</span><span class="chip s-tested">Built</span></div><div class="nd" data-m="base"><b>Base driver</b><span>Accepts only /cmd_vel_safe</span><span class="chip s-tbc">TBC</span></div></div></div>
+      <div class="lane" id="chassis-stack"><div class="lh"><b>Chassis stack</b><span>where to go</span></div><div class="nodes"><div class="nd" data-m="map"><b>Pre-built map</b><span>3D scan with waypoints, operation points and observation points</span><span class="chip s-tbc">TBC</span></div><div class="nd" data-m="loc"><b>Localisation</b><span>NDT map matching on depth clouds, wheel-odometry prediction; 4.5 cm in sim</span><span class="chip s-proto">Prototype</span></div><div class="nd" data-m="occ"><b>Occupancy</b><span>Onboard VLM judges from the camera image whether each desk is in use</span><span class="chip s-tbc">TBC</span></div><div class="nd" data-m="route"><b>Route choice</b><span>Next free desk from what was observed</span><span class="chip s-tbc">TBC</span></div><div class="nd" data-m="nav"><b>Nav2</b><span>Drives between chosen points</span><span class="chip s-tbc">TBC</span></div><div class="nd" data-m="safe"><b>Safety gate</b><span>YOLO11n + RGB-D depth; stops within 1.0 m</span><span class="chip s-tested">Built</span></div><div class="nd" data-m="base"><b>Base driver</b><span>Accepts only /cmd_vel_safe</span><span class="chip s-tbc">TBC</span></div></div></div>
       <div class="smrow" id="state-machine">
         <div class="lh"><b style="color:var(--amber)">State machine</b><span>draft states · transitions TBC</span></div>
         <div class="smbox">
@@ -1089,9 +1132,33 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     </div>
     <figure class="wide"><img src="media/cloud-alignment.png" alt="Top view: before, the depth cloud lies skewed off the map; after, it sits on the table and chair outlines" width="1760" height="720"><figcaption><b>Stationary check.</b> Before vs after: 1.81 m → 4.6 cm error.</figcaption></figure>
 
+
+    <div class="subhead" id="nav-change"><h3>From online SLAM to a pre-built map</h3><p>The desk positions are fixed in advance, so most of the navigation work moves to before the competition.</p></div>
+    <div class="navcmp">
+      <div class="nv old"><h4>First version</h4><ol><li>Run SLAM in the arena</li><li>Find the desks</li><li>Plan paths automatically</li></ol><p style="font-size:.82rem;margin:12px 0 0">Everything online, during the run.</p></div>
+      <div class="nv new"><h4>Revised version</h4>
+        <div class="ph">Before the competition</div><ol><li>3D-scan a point-cloud map (borrowed scanner)</li><li>Mark the six desks</li><li>Mark observation, operation and waypoints</li></ol>
+        <div class="ph">During the competition</div><ol start="4"><li>Localise on the map</li><li>Choose the next point to go</li></ol></div>
+      <figure class="arena" style="margin:0">
+        <svg viewBox="0 0 400 260" role="img" aria-label="Arena: six desks pushed together in pairs into three large tables; observation points between them and an operation point beside each desk">
+          <defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8b96a7"/></marker></defs>
+          <path d="M30 230 H370 V30 H30 Z" fill="none" stroke="#8b96a7" stroke-dasharray="4 5" stroke-width="1.2" marker-end="url(#ar)"/>
+          <g fill="#5a7896" stroke="#0e131b" stroke-width="2">
+            <rect x="60" y="70" width="60" height="45"/><rect x="60" y="115" width="60" height="45"/>
+            <rect x="170" y="70" width="60" height="45"/><rect x="170" y="115" width="60" height="45"/>
+            <rect x="280" y="70" width="60" height="45"/><rect x="280" y="115" width="60" height="45"/>
+          </g>
+          <g font-family="IBM Plex Mono,monospace" font-size="10" fill="#e7e2d5" text-anchor="middle"><text x="90" y="96">D1</text><text x="90" y="141">D2</text><text x="200" y="96">D3</text><text x="200" y="141">D4</text><text x="310" y="96">D5</text><text x="310" y="141">D6</text></g>
+          <g fill="#e39b4b"><circle cx="90" cy="56" r="5"/><circle cx="90" cy="174" r="5"/><circle cx="200" cy="56" r="5"/><circle cx="200" cy="174" r="5"/><circle cx="310" cy="56" r="5"/><circle cx="310" cy="174" r="5"/></g>
+          <g fill="none" stroke="#56a9a3" stroke-width="2"><rect x="139" y="109" width="12" height="12" transform="rotate(45 145 115)"/><rect x="249" y="109" width="12" height="12" transform="rotate(45 255 115)"/><rect x="24" y="109" width="12" height="12" transform="rotate(45 30 115)"/><rect x="364" y="109" width="12" height="12" transform="rotate(45 370 115)"/></g>
+          <g font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#8b96a7"><circle cx="40" cy="250" r="4" fill="#e39b4b"/><text x="48" y="253">operation point (free long side)</text><rect x="214" y="246" width="8" height="8" transform="rotate(45 218 250)" fill="none" stroke="#56a9a3" stroke-width="1.5"/><text x="228" y="253">observation point</text></g>
+        </svg>
+        <figcaption>Six desks, pushed together in pairs along their long sides. Each desk is served from its free long side. Schematic, not to scale.</figcaption>
+      </figure>
+    </div>
     <div class="grid2" style="margin-top:28px">
       <div class="tbc"><h3>Not proven yet</h3><ul><li>One short route, simulation only</li><li>No IMU, no filtering of moving people</li></ul></div>
-      <div class="tbc"><h3>Still to build</h3><ul><li>Occupancy check, Nav2 route, state machine</li><li>Same localiser on the real robot</li></ul></div>
+      <div class="tbc"><h3>Still to build</h3><ul><li>Point-cloud map scan, occupancy check (VLM), Nav2 route, state machine</li><li>Same localiser on the real robot</li></ul></div>
     </div>
   </div>
 </section>
@@ -1102,17 +1169,17 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <div class="shead">
       <div class="callno"><b>629.892 .10</b> BILL OF MATERIALS</div>
       <h2>What we ordered</h2>
-      <span class="stamp s-proto">Order sheet A06 · HK$</span>
-      <p class="intro">Purchased parts by category, in Hong Kong dollars.</p>
+      <span class="stamp s-proto">Two order sheets · HK$</span>
+      <p class="intro">Main parts order plus an extra-part order for the drone, in Hong Kong dollars. 3D-printed parts are provided by the lab.</p>
     </div>
     <dl class="bomtop">
-      <div><dt>Line items</dt><dd>36</dd></div>
-      <div><dt>Order total</dt><dd>HK$1,214.11</dd></div>
+      <div><dt>Line items</dt><dd>39 <small style="display:inline;font:400 .8rem var(--font-body);color:var(--muted)">36 main + 3 drone</small></dd></div>
+      <div><dt>Budget total</dt><dd>HK$1,387.42 <small style="display:block;font:400 .8rem var(--font-body);color:var(--muted)">main HK$1,214.11 · drone HK$173.31</small></dd></div>
       <div><dt>Saved on structure</dt><dd>HK$246.50 <small style="display:block;font:400 .8rem var(--font-body);color:var(--muted)">steel arms and connectors from one supplier for ¥100</small></dd></div>
     </dl>
-    <div id="budget-cats" class="catbar" role="img" aria-label="Spend by category"><span style="width:33.05%;background:#e39b4b" title="Actuation: HK$401.23"></span><span style="width:33.02%;background:#5a7896" title="Structure: HK$400.92"></span><span style="width:17.95%;background:#56a9a3" title="Electronics & power: HK$217.89"></span><span style="width:10.03%;background:#8b96a7" title="Shafts & bearings: HK$121.73"></span><span style="width:5.96%;background:#c9b98f" title="Transmission: HK$72.34"></span></div>
-    <div class="catkey"><span><i style="background:#e39b4b"></i>Actuation <b>HK$401.23</b> · 5 lines</span><span><i style="background:#5a7896"></i>Structure <b>HK$400.92</b> · 7 lines</span><span><i style="background:#56a9a3"></i>Electronics & power <b>HK$217.89</b> · 7 lines</span><span><i style="background:#8b96a7"></i>Shafts & bearings <b>HK$121.73</b> · 12 lines</span><span><i style="background:#c9b98f"></i>Transmission <b>HK$72.34</b> · 5 lines</span></div>
-    <details class="bomd"><summary>Show all 36 order lines</summary>
+    <div id="budget-cats" class="catbar" role="img" aria-label="Spend by category"><span style="width:28.92%;background:#e39b4b" title="Actuation: HK$401.23"></span><span style="width:28.90%;background:#5a7896" title="Structure: HK$400.92"></span><span style="width:15.70%;background:#56a9a3" title="Electronics & power: HK$217.89"></span><span style="width:12.49%;background:#b48ad6" title="Drone (extra parts): HK$173.31"></span><span style="width:8.77%;background:#8b96a7" title="Shafts & bearings: HK$121.73"></span><span style="width:5.21%;background:#c9b98f" title="Transmission: HK$72.34"></span></div>
+    <div class="catkey"><span><i style="background:#e39b4b"></i>Actuation <b>HK$401.23</b> · 5 lines</span><span><i style="background:#5a7896"></i>Structure <b>HK$400.92</b> · 7 lines</span><span><i style="background:#56a9a3"></i>Electronics & power <b>HK$217.89</b> · 7 lines</span><span><i style="background:#b48ad6"></i>Drone, extra parts <b>HK$173.31</b> · 3 lines</span><span><i style="background:#8b96a7"></i>Shafts & bearings <b>HK$121.73</b> · 12 lines</span><span><i style="background:#c9b98f"></i>Transmission <b>HK$72.34</b> · 5 lines</span></div>
+    <details class="bomd"><summary>Show all 36 main order lines</summary>
     <div class="tbl bom" id="bom">
       <table>
         <thead><tr><th>No.</th><th>Item</th><th style="text-align:right">Qty</th><th style="text-align:right">Unit (HK$)</th><th style="text-align:right">Total (HK$)</th><th>Purpose</th></tr></thead>
@@ -1122,14 +1189,103 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     </div>
     
     </details>
+    <details class="bomd" id="bom-drone"><summary>Show the 3 drone extra-part lines</summary>
+    <div class="tbl bom">
+      <table>
+        <thead><tr><th>No.</th><th>Item</th><th style="text-align:right">Qty</th><th style="text-align:right">Unit (HK$)</th><th style="text-align:right">Total (HK$)</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td class="num" style="text-align:left">A1</td><td>OV2640 camera</td><td class="num">1</td><td class="num">44.28</td><td class="num">44.28</td><td>Top-down desk photo</td></tr>
+          <tr><td class="num" style="text-align:left">A2</td><td>E1 Mini open-source drone platform</td><td class="num">1</td><td class="num">82.34</td><td class="num">82.34</td><td>The mission; visual pose estimation and outer-loop position control</td></tr>
+          <tr><td class="num" style="text-align:left">A3</td><td>HPXGRC ELRS 2.4 GHz micro receiver, external antenna</td><td class="num">1</td><td class="num">46.69</td><td class="num">46.69</td><td>Remote control and kill switch</td></tr>
+        </tbody>
+        <tfoot><tr><td></td><td>Total</td><td></td><td></td><td class="num">173.31</td><td></td></tr></tfoot>
+      </table>
+    </div>
+    </details>
   </div>
 </section>
 
-<!-- 11 AI USE -->
-<section id="ai-use">
+
+<!-- 11 RISKS -->
+<section id="risks" class="alt">
   <div class="wrap">
     <div class="shead">
-      <div class="callno"><b>629.892 .11</b> AI PARTICIPATION</div>
+      <div class="callno"><b>629.892 .11</b> RISKS &amp; PLAN B</div>
+      <h2>Weak points, and what we do if they fail</h2>
+      <span class="stamp s-tbc">Stage 2 work</span>
+      <p class="intro">No one may step in during the competition, so every weak point needs a fallback that runs on its own.</p>
+    </div>
+    <div class="risks">
+      <div class="risk" id="risk-lift">
+        <div class="rh"><b>Lift stability</b><span>weakest hardware point</span></div>
+        <svg viewBox="0 0 300 130" aria-hidden="true">
+          <g stroke="#56a9a3" stroke-width="5" fill="none"><path d="M120 120 V30"/><path d="M180 120 V30"/></g>
+          <path d="M108 30 H230" stroke="#e39b4b" stroke-width="6"/>
+          <path d="M108 30 H230" stroke="#e39b4b" stroke-width="6" opacity=".35" transform="rotate(-4 150 120)"/>
+          <path d="M108 30 H230" stroke="#e39b4b" stroke-width="6" opacity=".35" transform="rotate(4 150 120)"/>
+          <g stroke="#5fd38a" stroke-width="2.5" stroke-dasharray="5 4"><path d="M120 110 L180 50"/><path d="M180 110 L120 50"/></g>
+          <path d="M90 124 H210" stroke="#5a7896" stroke-width="5"/>
+          <text x="236" y="34" font-family="IBM Plex Mono,monospace" font-size="10" fill="#ff8d88">sway</text>
+          <text x="186" y="84" font-family="IBM Plex Mono,monospace" font-size="10" fill="#5fd38a">bracing</text>
+        </svg>
+        <p>The aluminium-extrusion lift is not stiff enough with the arm and drone pad on top; the platform can sway when the arm is extended.</p>
+        <div class="pb"><i>Plan</i>Reinforce the extrusion frame with bracing next semester, before the arm goes on the chassis. Until then, limit arm speed and extension while the lift is raised.</div>
+      </div>
+      <div class="risk" id="risk-drone">
+        <div class="rh"><b>Drone stability &amp; landing</b><span>flight risk</span></div>
+        <svg viewBox="0 0 300 130" aria-hidden="true">
+          <rect x="40" y="96" width="140" height="18" fill="#5a7896"/>
+          <rect x="196" y="100" width="54" height="10" fill="none" stroke="#e39b4b" stroke-width="2"/>
+          <text x="198" y="124" font-family="IBM Plex Mono,monospace" font-size="9" fill="#8b96a7">landing pad</text>
+          <g fill="#e7e2d5"><rect x="94" y="30" width="22" height="7"/><circle cx="88" cy="30" r="7" fill="none" stroke="#e7e2d5"/><circle cx="122" cy="30" r="7" fill="none" stroke="#e7e2d5"/></g>
+          <path d="M70 46 q35 12 70 0" stroke="#ff8d88" fill="none" stroke-dasharray="3 3"/>
+          <path d="M150 40 q50 10 72 56" stroke="#ff8d88" fill="none" stroke-dasharray="3 3"/>
+          <text x="40" y="22" font-family="IBM Plex Mono,monospace" font-size="10" fill="#ff8d88">drift</text>
+          <text x="226" y="70" font-family="IBM Plex Mono,monospace" font-size="10" fill="#ff8d88">off-pad?</text>
+        </svg>
+        <p>Indoors, the small quadcopter can drift while hovering, which blurs or shifts the desk photo, and it may not land squarely on the pad.</p>
+        <div class="pb"><i>Plan B</i>A camera at the rear of the robot sweeps sideways across the desk; the frames are stitched into a panorama of the desk top and passed to the same perception pipeline.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 PLAN -->
+<section id="plan">
+  <div class="wrap">
+    <div class="shead">
+      <div class="callno"><b>629.892 .12</b> TEAM &amp; TIMELINE</div>
+      <h2>Seven people, five work streams, competition in week 12</h2>
+      <span class="stamp s-proto">Next semester</span>
+      <p class="intro">Who builds what, and when it must be ready.</p>
+    </div>
+    <div class="roles" id="roles">
+      <div><b>Hardware &amp; electronic control</b><span>CHEN Yiheng</span><span>SONG Chenxin</span><span>DAI Haoly</span></div>
+      <div><b>Chassis motion</b><span>CHEN Yiheng</span><span>QIN Fanqing</span></div>
+      <div><b>Segmentation &amp; recognition</b><span>LI Zhishui</span></div>
+      <div><b>Rectification &amp; arm planning</b><span>JIN Zijie</span><span>GONG Xiangyi</span></div>
+      <div><b>Drone</b><span>CHEN Yiheng</span></div>
+    </div>
+    <div class="gantt" id="timeline" role="img" aria-label="Timeline by teaching week: work streams in weeks 1 to 8, integration weeks 5 to 11, competition in week 12">
+      <div class="gr gh"><div class="gl" style="text-align:left;padding-left:14px">Teaching week</div><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div><div>10</div><div>11</div><div class="cw">12</div><div>13</div></div>
+      <div class="gr"><div class="gl">Hardware &amp; electronic control</div><div class="bar" style="grid-column:2/8;--c:#5a7896"></div></div>
+      <div class="gr"><div class="gl">Chassis motion</div><div class="bar" style="grid-column:3/9;--c:#56a9a3"></div></div>
+      <div class="gr"><div class="gl">Segmentation &amp; recognition</div><div class="bar" style="grid-column:2/9;--c:#e39b4b"></div></div>
+      <div class="gr"><div class="gl">Drone (+ panorama Plan B)</div><div class="bar" style="grid-column:3/9;--c:#b48ad6"></div></div>
+      <div class="gr"><div class="gl">Rectification &amp; arm planning</div><div class="bar" style="grid-column:3/10;--c:#c9b98f"></div></div>
+      <div class="gr"><div class="gl">Integration &amp; testing (all)</div><div class="bar" style="grid-column:6/13;--c:#e7e2d5"></div></div>
+      <div class="gr"><div class="gl">Final report</div><div class="bar" style="grid-column:13/15;--c:#8b96a7"></div></div>
+      <div class="gr mrow"><div class="gl">Milestones</div><div class="ms" style="grid-column:6" title="M1: arm moves under STM32 control"></div><div class="ms" style="grid-column:9" title="M2: full desk cycle on the robot"></div><div class="ms" style="grid-column:13" title="M3: competition"></div></div>
+    </div>
+    <div class="gkey"><span><i></i>M1 week 5: arm moves under STM32 control</span><span><i></i>M2 week 8: first full desk cycle on the robot</span><span><i></i>M3 week 12: competition</span></div>
+  </div>
+</section>
+
+<!-- 13 AI USE -->
+<section id="ai-use" class="alt">
+  <div class="wrap">
+    <div class="shead">
+      <div class="callno"><b>629.892 .13</b> AI PARTICIPATION</div>
       <h2>How much of this AI did</h2>
       <span class="stamp s-proto">Declared in full</span>
       <p class="intro">We used AI tools heavily throughout this project, from the first design sketches to the final code, and we want to be clear about where. Several different AI tools were involved.</p>
@@ -1165,7 +1321,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 <section id="repos">
   <div class="wrap">
     <div class="shead">
-      <div class="callno"><b>629.892 .12</b> SOURCE</div>
+      <div class="callno"><b>629.892 .14</b> SOURCE</div>
       <h2>Code and files</h2>
       <p class="intro">Everything is in the ICPROJECT2026 organisation on GitHub. Private repositories open for reviewers once they have been added as read-only collaborators.</p>
     </div>
@@ -1188,7 +1344,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 <script>
 (()=>{
 // ---------- software state walk-through ----------
-(()=>{const SW={"patrol": {"n": "Patrol", "d": "Follow the waypoint route on the pre-built map.", "m": ["map", "loc", "nav", "safe", "base"], "o": "waypoint reached"}, "observe": {"n": "Observe", "d": "At an observation point, look under every desk for human legs. Occupied desks leave the to-do list for the rest of the run.", "m": ["loc", "occ", "safe"], "o": "list of free desks"}, "travel": {"n": "Travel", "d": "Pick the next free desk and drive to its operation point with Nav2.", "m": ["route", "nav", "loc", "safe", "base"], "o": "at operation point"}, "sign": {"n": "Check sign", "d": "Look for a \"reserved\" sign on the desk. If there is one, skip back to Travel.", "m": ["sign"], "o": "desk is not reserved"}, "capture": {"n": "Capture", "d": "Announce the take-off, launch the drone from the rear landing pad, take one top-down photo of the desk and land. The drone only flies for a desk that is free and not reserved.", "m": ["drone"], "o": "one desk photo"}, "classify": {"n": "Classify", "d": "Find every object, outline it with a four-point box and label it public property, personal property or waste. Map each one onto tabletop coordinates.", "m": ["yolo", "sam", "vlm", "cal"], "o": "objects with class and X–Y"}, "act": {"n": "Act", "d": "For each object, take the matching tag from its slot, swing to the front and place it, then hand control back to the patrol.", "m": ["plan", "mcu", "act"], "o": "desk done"}};const box=document.querySelector('.sw');if(!box)return;
+(()=>{const SW={"patrol": {"n": "Patrol", "d": "Follow the waypoint route on the pre-built map.", "m": ["map", "loc", "nav", "safe", "base"], "o": "waypoint reached"}, "observe": {"n": "Observe", "d": "At an observation point, the onboard VLM looks at each desk in the camera image and judges whether someone is using it. Occupied desks leave the to-do list for this round.", "m": ["loc", "occ", "safe"], "o": "list of free desks"}, "travel": {"n": "Travel", "d": "Pick the next free desk and drive to its operation point with Nav2.", "m": ["route", "nav", "loc", "safe", "base"], "o": "at operation point"}, "sign": {"n": "Check sign", "d": "Look for a \"reserved\" sign on the desk. If there is one, skip back to Travel.", "m": ["sign"], "o": "desk is not reserved"}, "capture": {"n": "Capture", "d": "Announce the take-off, launch the drone from the rear landing pad, take one top-down photo of the desk and land. The drone only flies for a desk that is free and not reserved.", "m": ["drone"], "o": "one desk photo"}, "classify": {"n": "Classify", "d": "Find every object, outline it with a four-point box and label it public property, personal property or waste. Map each one onto tabletop coordinates.", "m": ["yolo", "sam", "vlm", "cal"], "o": "objects with class and X–Y"}, "act": {"n": "Act", "d": "For each object, take the matching tag from its slot, swing to the front and place it, then hand control back to the patrol.", "m": ["plan", "mcu", "act"], "o": "desk done"}};const box=document.querySelector('.sw');if(!box)return;
 const keys=Object.keys(SW),btns=[...box.querySelectorAll('.sp')],nodes=[...box.querySelectorAll('.nd')];
 let i=0,pinned=false;
 function show(k){const d=SW[k];box.classList.add('live');
@@ -1405,13 +1561,15 @@ requestAnimationFrame(frame);
 const LEFT=[['Mission','mission',[['The loop','mission'],['Always-on safety layer','loop-guard']]],
  ['Software','architecture',[['State machine','state-machine'],['Chassis stack','chassis-stack'],['Upper stack','upper-stack']]],
  ['Perception','perception',[['Drone and flight safety','drone'],['Detection pipeline','pipeline'],['Onboard VLM limits','vlm-limits']]],
- ['Localisation','navigation',[['Depth to point cloud','depth-cloud'],['Sensor fusion','fusion'],['Results','loc-results']]],
+ ['Localisation','navigation',[['Depth to point cloud','depth-cloud'],['Sensor fusion','fusion'],['Results','loc-results'],['Navigation plan','nav-change']]],
  ['Arm planning','planning',[['Reachable workspace','workspace'],['Iterations','iterations']]],
  ['Safety','safety',[['Stop, hold, drive','stop-zones'],['Fails safe','fail-safe']]]];
 const RIGHT=[['Mechanical','mechanical',[['Joints','joints'],['Shoulder section','shoulder'],['Hardware build','hardware']]],
  ['Electrical','electrical',[['Architecture','elec-diagram'],['Revisions','elec-revisions']]],
  ['Embedded control','firmware',[['Actuator status','actuators'],['Stepper firmware','stepper-fw']]],
- ['Budget','budget',[['Spend by category','budget-cats'],['Full parts list','bom']]],
+ ['Budget','budget',[['Spend by category','budget-cats'],['Full parts list','bom'],['Drone order','bom-drone']]],
+ ['Risks & Plan B','risks',[['Lift stability','risk-lift'],['Drone stability','risk-drone']]],
+ ['Team & timeline','plan',[['Roles','roles'],['Timeline','timeline']]],
  ['AI use','ai-use',[]],['Code','repos',[]]];
 const W=1180,RH=29,PADY=40;
 const rows=side=>side.reduce((n,b)=>n+Math.max(1,b[2].length)+0.55,0)-0.55;
